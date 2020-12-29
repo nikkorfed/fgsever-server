@@ -6,9 +6,8 @@ const { GoogleSpreadsheet } = require("google-spreadsheet");
 const doc = new GoogleSpreadsheet("1_9Dv5BNEkAx3e2c7bP58AhkctjyH9sMSR_8h8AGTnTY");
 
 // (async () => {
-//   const data = await getOptions({ modelCode: "F90", productionDate: "05.06.2019", currentOptions: [] });
+//   const data = await getOptions({ modelCode: "G30", productionDate: "05.06.2019", currentOptions: [] });
 //   await fs.writeFile("./result.json", JSON.stringify(data, null, 2));
-
 //   console.log("\nФайл успешно сохранён!");
 // })();
 
@@ -23,8 +22,17 @@ async function getOptions({ modelCode, productionDate, currentOptions }) {
   // Определение необходимых листов для сбора данных
   for (let currentSheet of doc.sheetsByIndex)
     if (currentSheet.title.includes(modelCode))
-      if (!optionsSheet) optionsSheet = currentSheet;
-      else specialPricesSheet = currentSheet;
+      if (currentSheet.title.includes("опции")) {
+        if (currentSheet.title.includes(">")) {
+          let date = currentSheet.title.match(/> (\d+\.\d+)/)[1];
+          if (+moment(productionDate, "DD-MM-YYYY") > +moment(date, ["MM-YYYY", "DD-MM-YYYY"])) optionsSheet = currentSheet;
+        } else optionsSheet = currentSheet;
+      } else if (currentSheet.title.includes("особые случаи")) {
+        if (currentSheet.title.includes(">")) {
+          let date = currentSheet.title.match(/> (\d+\.\d+)/)[1];
+          if (+moment(productionDate, "DD-MM-YYYY") > +moment(date, ["MM-YYYY", "DD-MM-YYYY"])) specialPricesSheet = currentSheet;
+        } else specialPricesSheet = currentSheet;
+      }
 
   // Формирование списка опций
   for (let row of await optionsSheet.getRows()) {
