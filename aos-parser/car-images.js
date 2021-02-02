@@ -57,7 +57,7 @@ let getCarImages = async (vin, hostname) => {
         await page.goto("https://etk-b2i.bmwgroup.com?sessionId=679c48cb722c46138aed7376a48101d3&amp;portal=OSMC&amp;lang=ru_RU");
       } else tryLoginETK = false;
       isLoginPage = await page.$eval("title", (title) => title.textContent == "AOS Login");
-      await page.waitFor(1500);
+      // await page.waitFor(1500);
       await page.waitForSelector('[perspectivextype="common-startseitePage"]', { timeout: 1500 });
       await page.click('[perspectivextype="common-startseitePage"]');
       await page.type("#combobox-1016-inputEl", vin);
@@ -71,7 +71,7 @@ let getCarImages = async (vin, hostname) => {
           showInfoFailed = true;
         }
       } while (showInfoFailed);
-      await page.waitForSelector(".etk-cosy-img", { timeout: 1500 });
+      await page.waitForSelector(".x-img", { timeout: 1500 });
 
       // Поиск и сохранение изображений автомобиля
 
@@ -91,6 +91,7 @@ let getCarImages = async (vin, hostname) => {
           const images = await page.$$(".x-img");
           links["exteriorImage"] = "https://etk-b2i.bmwgroup.com" + (await images[0].evaluate((image) => image.getAttribute("src")));
           links["interiorImage"] = "https://etk-b2i.bmwgroup.com" + (await images[1].evaluate((image) => image.getAttribute("src")));
+          // await page.waitForFunction((image) => image.getAttribute("src").includes("/etk-rest/"), { polling: "mutation" }, images[0]);
 
           await images[0].click();
           await page.waitForSelector(".x-img.x-window-item", { timeout: 1500 });

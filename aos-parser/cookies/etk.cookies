@@ -1,0 +1,57 @@
+[
+  {
+    "name": "techinfoToken",
+    "value": "838fa8dbd0eb40698dfd7eb380e8070e",
+    "domain": "etk-b2i.bmwgroup.com",
+    "path": "/",
+    "expires": -1,
+    "size": 45,
+    "httpOnly": false,
+    "secure": false,
+    "session": true
+  },
+  {
+    "name": "origin",
+    "value": "Internet",
+    "domain": ".bmwgroup.com",
+    "path": "/",
+    "expires": -1,
+    "size": 14,
+    "httpOnly": true,
+    "secure": true,
+    "session": true
+  },
+  {
+    "name": "SMSESSION",
+    "value": "b4NccExnzBmd4yYpfCFGlsOAJvBUCGXPakQEtgYLrtE+UFvC/e5+IPK0Hoo1m1NB+oodjQ6PaCQxRBQgwNwp3O5/Dl/gidIuuC0KrvDwyAphjOlF1Bl1+6X2Wv/HY1DcKQWTO9jUFsPZRxjNL/KRusA3X1akjXws32RMgW0Cf3vwGg7kutc2V4E3BeSQ/BtWqCuu9oo7q9JlHPc6nI6tTE62wxTPmjuPTFtEQqtVgP3WdGlUTZ2W7annTEa8EQY9nS/rLyunCyyxOeyHg2Y7IqSHsi6nNbISSPpp4zgZVaLVTSAXFkYOqhH6+jLalm2DrgeAqu+DgA5VhE8FJt48e7oBfVc0loWDG6cpSXDI4w4ULrzb+dLBZbB5FHlhc3ipsMMwlFg16R4rd5Sy4+AEafLeK9+lFg5N9/SYxMQiZjAbkPRSHThkFb0IWwN2Q23VcDTxnpO7SXgWVk83scfku0AyvemKE+LcWs5XE3rXNCvhy3e1o1SMeYnfV5bD6ZCVITfSAK54Zt7hsPO8li3pQ25EnHfF3tAbbvYsQ/GNrGRymlIvarcct6GilHEANyQqEYJDxOxgO1L6gBPVwAD01AErUBQozDmLWv+PERTyuOyuiEJC+JHgkZsyLLXdY/T5DnbzOS1yTA9IR7aDqFStQv4WD7SEOZuy7wZfRMr9S4a6E/i5t295jsno5VYGoZsO/50CHssCqnXwuMM6lpOO+1lmUqj5fnX72tybW97Jhf1NrkOJG836k5DDWJ4Npub36yyvTOb838AhHKFJpakyxgwhsuq/lwbuXcTq0Jj7N8ITxYXAYqud2/MKCv0W3LXQqKifLuZUfcDeiU1sk99iZmtIK2AfqCIyIincPpf/QyyQnP8EcwG287um0Kd08PLhOb7lP2Et9fXKHeae3JuyPokq7lVnS9dM0vl/lI6IJBwuNcVYF2SqEcHKQ5ctrwbBZJxZ8v4qcYlrt3Li4Qy75jOkLKXAeZQHlF+jzz4iCCnadzxSV/lGfNezxDlano0wDjh3H22rnDXpfWkKRTV7SkOCmG0NPPFfocansfpySdDr7+0/fMWlpklZxxGokL9tfdW9ZucOzSKjVbQNlx2f/zFzsKgIwD2Kfm2HJ/r4TIFF5fDr8qza8FFBdB4zO+IE2ehU7KMOgjFhYHcvTjywKITNtJq2VbMi",
+    "domain": ".bmwgroup.com",
+    "path": "/",
+    "expires": -1,
+    "size": 1193,
+    "httpOnly": true,
+    "secure": true,
+    "session": true
+  },
+  {
+    "name": "SM_UID",
+    "value": "b2iu10101948",
+    "domain": ".bmwgroup.com",
+    "path": "/",
+    "expires": -1,
+    "size": 18,
+    "httpOnly": true,
+    "secure": true,
+    "session": true
+  },
+  {
+    "name": "SM_USER",
+    "value": "komandir2c3@yandex.ru",
+    "domain": ".bmwgroup.com",
+    "path": "/",
+    "expires": -1,
+    "size": 28,
+    "httpOnly": true,
+    "secure": true,
+    "session": true
+  }
+]

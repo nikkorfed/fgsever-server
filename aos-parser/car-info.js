@@ -15,6 +15,7 @@ let getCarInfo = async (vin) => {
 
   const browser = await puppeteer.launch({
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    headless: false,
   });
   const page = await browser.newPage();
   await page.setViewport({ width: 1440, height: 900 });
@@ -62,7 +63,7 @@ let getCarInfo = async (vin) => {
       isLoginPage = await page.$eval("title", (title) => title.textContent == "AOS Login");
       await page.type(".air-vinsearch-field", vin);
       await page.click(".air-vinsearch-button");
-      await page.waitFor(500);
+      // await page.waitFor(500);
 
       if (await page.$(".air-vinsearch-feedback-vinnotfound")) {
         console.log(`[${vin}] Данный VIN не найден!`);
@@ -70,7 +71,7 @@ let getCarInfo = async (vin) => {
         return { error: "vin-not-found" };
       }
 
-      if (await page.$(".ui-datatable-tablewrapper")) {
+      if ((await page.$eval(".ui-datatable-tablewrapper tbody", (table) => table.textContent)) != "No records found.") {
         console.log(`[${vin}] По данному VIN найдено несколько автомобилей!`);
         let cars = await page.$$eval(".ui-datatable-tablewrapper tbody tr", (rows) =>
           rows.map((row) => {

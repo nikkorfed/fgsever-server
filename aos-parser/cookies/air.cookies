@@ -1,0 +1,46 @@
+[
+  {
+    "name": "SMSESSION",
+    "value": "aeq90HwxAc9CHAFGxYXvXLqdUIbIhdz/iN+9hb2nLYcu2YsD3ArvSFE8J9uny44BxpPq0zc/wZIAQLwPlzVYIYQ+jqAl2okyHbgVsM/ObiXBe4zDvqvlN0vz2gsxkUtLZuhR/g5gd4yLwa38JXZvuXqnANxa4kzXo18gQ/Dc/4eJi+weGExPgKELHO5e+OWwiqe1qInXjQonqzfZ5cCKmZ0D1Fr2XZJ5Y2dep5ZCyUTHzwufG96Az0CD2a25mz9QO9/4VtQfdhx2kUDKI1XOzaVQrybv7EvuMKq/7LMjOfP/alK/iKH9oHMbpqqJLOS/AukGApptB9eSj0Qkojde4khsI4sQgkPYbIND5SbTn44I+RPJelO9lGtPPFIUGpKubn4V1HKtJ/hQlU66Pq7lHUIti9890ddYFQ4Dz1W7xjJgf4NEV36bTB3viEPwMT5YigMtX/g++pFNogoqio/jj7PWsuSkFYALxpHqf3Q2sUMe+wPIDUc/wLg1RCYv6JQ7r/5vFl9w07xoUPva0ORUibO82a7xbTBBXhZ/5LpMuqvkabMba9HwFdtU+ZJRhyezRTR9G3xtGFNyva125LAzNyKioQwuIUpZSkVIXz1TAjYyugrxfsfHaCzs4FtKQMK9WAz+T7IsBh1smkL0COOtL6vor3VFdEbXo73p3OTidBbshEjKHC927cVnmgt7O2L+3DIpkvB3wvnqzWCA7gyZLnna0AGrJUmmTcIOcFJOo3FJRiYb28fyPd/pDgRnUUocwZbi1TMa5ITyN/Crsh3AytJFr/bBmjPMIQ8CbKOa+S2u1ZcsK8wgLX2FlJNcdvfqdTpM6LL5xpfouf3Yr/AfaMe6xLLnHrnWLi6bPW1gPzUfdTmp4H6UZZ3uj3penpaiUum/fnT+1fAfTsUA+W45Y5AgmwlmO9F6gPh0AnBzxSbfFukxuS8guj/EZY+HDWvnn1823hZAD+W+dASyP78t6GoBDZ4ysT740Wweou5o/zXxMsOQtSD27kfC1i3a6rw4myOIzvI/RHj/DoUoE9ev1cWWfddKolc7PmImMbghtPThdunHfLH6+hCwYSVnAy+gXD+/kAnwCHzFbASydqo+TT6x3VBE5MrED6jMidd61qpDze+JgKHzQUyCXVXcAelS4u3N7HBX7X4EkU4WntdgjHYXyYI3S9xA",
+    "domain": ".bmwgroup.com",
+    "path": "/",
+    "expires": -1,
+    "size": 1193,
+    "httpOnly": true,
+    "secure": true,
+    "session": true
+  },
+  {
+    "name": "JSESSIONID",
+    "value": "169b4b331d6bd313354ea4a57431.0",
+    "domain": "myair-bdr.bmwgroup.com",
+    "path": "/air",
+    "expires": -1,
+    "size": 40,
+    "httpOnly": false,
+    "secure": true,
+    "session": true
+  },
+  {
+    "name": "AIR_TRANSIENT",
+    "value": "eyJ2IjoxLCJsIjoicnVfUlUiLCJkYyI6bnVsbCwidmkiOm51bGwsInAiOm51bGwsInZrIjpmYWxzZSwibiI6IlNUQVJUUEFHRSJ9",
+    "domain": "myair-bdr.bmwgroup.com",
+    "path": "/air",
+    "expires": -1,
+    "size": 113,
+    "httpOnly": false,
+    "secure": true,
+    "session": true
+  },
+  {
+    "name": "AIR_PERSISTENT",
+    "value": "eyJ2IjoxLCJsIjoicnVfUlUiLCJnIjpmYWxzZX0=",
+    "domain": "myair-bdr.bmwgroup.com",
+    "path": "/air",
+    "expires": 3759730701.463616,
+    "size": 54,
+    "httpOnly": false,
+    "secure": true,
+    "session": false
+  }
+]
