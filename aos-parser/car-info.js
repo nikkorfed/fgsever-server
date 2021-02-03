@@ -33,7 +33,7 @@ let getCarInfo = async (vin) => {
         await page.type("#USER", "komandir2c3@yandex.ru");
         await page.type("#PASSWORD", "comandG06");
         await page.click("#loginbtn");
-        await page.waitForNavigation({ timeout: 10000 });
+        // await page.waitForNavigation({ timeout: 10000 });
         console.log(`[${vin}] Авторизация выполнена`);
       }
 
