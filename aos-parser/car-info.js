@@ -15,6 +15,7 @@ let getCarInfo = async (vin) => {
 
   const browser = await puppeteer.launch({
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    slowMo: 20,
   });
   const page = await browser.newPage();
   await page.setViewport({ width: 1440, height: 900 });
@@ -70,7 +71,11 @@ let getCarInfo = async (vin) => {
         return { error: "vin-not-found" };
       }
 
-      if ((await page.$eval(".ui-datatable-tablewrapper tbody", (table) => table.textContent)) != "No records found.") {
+      // console.log(await page.$eval(".ui-datatable-tablewrapper tbody", (table) => table.textContent));
+      if (
+        (await page.$(".ui-datatable-tablewrapper tbody")) &&
+        (await page.$eval(".ui-datatable-tablewrapper tbody", (table) => table.textContent)) != "No records found."
+      ) {
         console.log(`[${vin}] По данному VIN найдено несколько автомобилей!`);
         let cars = await page.$$eval(".ui-datatable-tablewrapper tbody tr", (rows) =>
           rows.map((row) => {
@@ -86,7 +91,7 @@ let getCarInfo = async (vin) => {
         return { error: "multiple-cars-founded", cars };
       }
 
-      await page.waitForSelector(".air-sonderausstattung", { timeout: 1500 });
+      await page.waitForSelector(".air-sonderausstattung", { timeout: 2000 });
       const content = await page.content();
 
       // Поиск и сохранение данных автомобиля
