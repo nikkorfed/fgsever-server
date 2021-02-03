@@ -63,7 +63,7 @@ let getCarInfo = async (vin) => {
       isLoginPage = await page.$eval("title", (title) => title.textContent == "AOS Login");
       await page.type(".air-vinsearch-field", vin);
       await page.click(".air-vinsearch-button");
-      // await page.waitFor(500);
+      await page.waitForTimeout(500);
 
       if (await page.$(".air-vinsearch-feedback-vinnotfound")) {
         console.log(`[${vin}] Данный VIN не найден!`);
@@ -71,13 +71,10 @@ let getCarInfo = async (vin) => {
         return { error: "vin-not-found" };
       }
 
-      // console.log(await page.$eval(".ui-datatable-tablewrapper tbody", (table) => table.textContent));
-      if (
-        (await page.$(".ui-datatable-tablewrapper tbody")) &&
-        (await page.$eval(".ui-datatable-tablewrapper tbody", (table) => table.textContent)) != "No records found."
-      ) {
+      let cars = await page.$$(".ui-datatable-tablewrapper tbody tr[data-ri]");
+      if (cars.length) {
         console.log(`[${vin}] По данному VIN найдено несколько автомобилей!`);
-        let cars = await page.$$eval(".ui-datatable-tablewrapper tbody tr", (rows) =>
+        cars = await page.$$eval(".ui-datatable-tablewrapper tbody tr[data-ri]", (rows) =>
           rows.map((row) => {
             return {
               vin: row.childNodes[6].textContent,
