@@ -1,4 +1,6 @@
 node_modules/
 images/
 
+aos-parser/cookies
+
 .DS_Store
