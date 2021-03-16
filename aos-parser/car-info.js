@@ -5,10 +5,9 @@ const fs = require("fs").promises;
 let getCarInfo = async (vin) => {
   if (!(vin.length == 7 || vin.length == 17)) return { error: "wrong-vin" };
 
-  if (!(await fs.access("./cache"))) await fs.mkdir("./cache");
-  if (await fs.access(`./cache/${vin}.json`)) {
+  if (await fs.access(__dirname + `/cache/${vin}.json`)) {
     console.log(`[${vin}] Данные автомобиля взяты из кэша!`);
-    return JSON.parse(await fs.readFile(`./cache/${vin}.json`));
+    return JSON.parse(await fs.readFile(__dirname + `/cache/${vin}.json`));
   }
 
   console.log(`[${vin}] Поиск данных автомобиля...`);
@@ -152,7 +151,7 @@ let getCarInfo = async (vin) => {
   await browser.close();
   if (Object.keys(result).length) {
     console.log(`[${vin}] Данные автомобиля в AIR успешно найдены!`);
-    fs.writeFile(`./cache/${vin}.json`, JSON.stringify(result));
+    fs.writeFile(__dirname + `/cache/${vin}.json`, JSON.stringify(result));
     return result;
   } else {
     console.log(`[${vin}] Данные автомобиля найти не удалось!`);

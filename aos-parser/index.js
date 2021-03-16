@@ -15,7 +15,8 @@ router.get("/", async (req, res) => {
   else res.send({ error: "no-vin" });
 });
 
-// Создание папки для хранения cookies
+// Создание папок
+fs.mkdir(__dirname + "/cache", { recursive: true });
 fs.mkdir(__dirname + "/cookies", { recursive: true });
 
 module.exports = router;
