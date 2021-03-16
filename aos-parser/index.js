@@ -10,8 +10,8 @@ router.use("/images", express.static("images"));
 
 // Основные запросы
 router.get("/", async (req, res) => {
-  if (req.query.vin && req.query.data == "images") res.send(await getCarImages(req.query.vin, req.hostname));
-  else if (req.query.vin) res.send(await getCarInfo(req.query.vin));
+  // if (req.query.vin && req.query.data == "images") res.send(await getCarImages(req.query.vin, req.hostname));
+  if (req.query.vin) res.send(await getCarInfo(req.query.vin));
   else res.send({ error: "no-vin" });
 });
 
