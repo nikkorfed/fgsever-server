@@ -5,7 +5,7 @@ const fs = require("fs").promises;
 let getCarInfo = async (vin) => {
   if (!(vin.length == 7 || vin.length == 17)) return { error: "wrong-vin" };
 
-  if (!fs.access("./cache")) await fs.mkdir("./cache");
+  if (!(await fs.access("./cache"))) await fs.mkdir("./cache");
   if (await fs.access(`./cache/${vin}.json`)) {
     console.log(`[${vin}] Данные автомобиля взяты из кэша!`);
     return JSON.parse(await fs.readFile(`./cache/${vin}.json`));
