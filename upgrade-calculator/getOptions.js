@@ -39,7 +39,7 @@ async function getOptions({ modelCode, productionDate, currentOptions }) {
     let option = {
       category: [translit(row["Категория"]), row["Категория"]],
       hidden: row["Скрыта"] == "Да" ? true : undefined,
-      page: row["Страница"] == "Есть" ? true : undefined,
+      page: (row["Страница"] == "Есть" && true) || row["Страница"] || undefined,
       code: row["Код"],
       name: row["Название"],
       label: row["Примечание"] && row["Дополнительно"] ? [row["Примечание"], row["Дополнительно"]] : undefined,
