@@ -288,9 +288,10 @@ function remove(option, shallow) {
     // Удаляем требование опции в качестве одной из нескольких
     this[option].required.forEach((required, index) => {
       if (typeof required == "object" && required.includes(removeName)) {
-        required = required.filter((option) => option != removeName);
-        if (required.length == 1) required = required[0];
-        this[option].required[index] = required;
+        this[option].required.splice(index, 1);
+        // required = required.filter((option) => option != removeName);
+        // if (required.length == 1) required = required[0];
+        // this[option].required[index] = required;
       }
     });
 
