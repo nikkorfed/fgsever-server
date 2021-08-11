@@ -281,11 +281,11 @@ function remove(option, shallow) {
   // Удаление требований этой опции в других
   for (let option in this) {
     if (!this[option].required) continue;
-    this[option].required.forEach((required, index) => {
-      if (typeof required == "object") {
-        if (required.find((option) => option == removeName)) this[option].required.splice(index, 1);
-      } else if (required == removeName) this[option].required.splice(index, 1);
-    });
+
+    this[option].required = this[option].required.filter((option) => option != removeName);
+    for (let required of this[option].required)
+      if (typeof required == "object") required = required.filter((option) => option != removeName);
+
     if (!this[option].required.length) delete this[option].required;
   }
 
