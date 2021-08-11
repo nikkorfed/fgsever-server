@@ -282,10 +282,20 @@ function remove(option, shallow) {
   for (let option in this) {
     if (!this[option].required) continue;
 
+    // Удаляем отдельное требование опции
     this[option].required = this[option].required.filter((option) => option != removeName);
-    for (let required of this[option].required)
-      if (typeof required == "object") required = required.filter((option) => option != removeName);
 
+    // Удаляем требование опции в качестве одной из нескольких
+    this[option].required.forEach((required, index) => {
+      if (typeof required == "object" && required.includes(removeName)) {
+        required = required.filter((option) => option != removeName);
+        if (required.length == 1) required = required[0];
+        this[option].required[index] = required;
+      }
+    });
+
+    // Удаляем требуемые опции, если ничего не осталось
+    this[option].required == this[option].required.filter((required) => (Array.isArray(required) ? required.length : true));
     if (!this[option].required.length) delete this[option].required;
   }
 
