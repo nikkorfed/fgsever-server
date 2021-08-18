@@ -40,7 +40,7 @@ let getCarInfo = async (vin) => {
         console.log(`[${vin}] Оказались на AOS Login. Заново авторизуемся...`);
         await page.goto("https://aos.bmwgroup.com/group/oss/start");
         await page.type("#USER", "mikania@list.ru");
-        await page.type("#PASSWORD", "comandG08");
+        await page.type("#PASSWORD", "comandG01");
         await page.click("#loginbtn");
         // await page.waitForNavigation({ timeout: 10000 });
         console.log(`[${vin}] Авторизация выполнена`);
