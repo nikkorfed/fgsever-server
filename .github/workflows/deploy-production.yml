@@ -1,0 +1,21 @@
+name: "deploy-production"
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: appleboy/ssh-action@master
+        with:
+          host: 80.78.254.156
+          username: root
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            cd fgsever-server
+            git restore . && git pull
+            rm .env && cp -f .env.production .env && rm .env.*
+            npm i
+            pm2 restart fgsever-server
