@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const fs = require("fs").promises;
 
+const headless = process.env.HEADLESS === "true";
 let getCarInfo = async (vin) => {
   if (!(vin.length == 7 || vin.length == 17)) return { error: "wrong-vin" };
 
@@ -23,6 +24,7 @@ let getCarInfo = async (vin) => {
   // Запуск браузера
 
   const browser = await puppeteer.launch({
+    headless,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
     slowMo: 50,
   });
