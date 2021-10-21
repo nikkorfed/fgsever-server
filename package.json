@@ -16,7 +16,7 @@
     "express": "^4.17.1",
     "google-spreadsheet": "^3.0.13",
     "moment": "^2.29.1",
-    "puppeteer": "^5.4.1",
+    "puppeteer": "^10.4.0",
     "transliteration": "^2.2.0"
   }
 }

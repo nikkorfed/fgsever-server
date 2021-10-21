@@ -3,6 +3,7 @@ const cheerio = require("cheerio");
 const fs = require("fs").promises;
 
 const headless = process.env.HEADLESS === "true";
+
 let getCarInfo = async (vin) => {
   if (!(vin.length == 7 || vin.length == 17)) return { error: "wrong-vin" };
 
@@ -26,7 +27,7 @@ let getCarInfo = async (vin) => {
   const browser = await puppeteer.launch({
     headless,
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    slowMo: 50,
+    slowMo: 20,
   });
   const page = await browser.newPage();
   await page.setViewport({ width: 1440, height: 900 });
@@ -41,10 +42,11 @@ let getCarInfo = async (vin) => {
       if (tryLoginAIR && isLoginPage) {
         console.log(`[${vin}] Оказались на AOS Login. Заново авторизуемся...`);
         await page.goto("https://aos.bmwgroup.com/group/oss/start");
-        await page.type("#USER", "mikania@list.ru");
-        await page.type("#PASSWORD", "comandG01");
-        await page.click("#loginbtn");
-        // await page.waitForNavigation({ timeout: 10000 });
+        await page.waitForNetworkIdle();
+        await page.type("input[autocomplete=username]", process.env.AOS_USER);
+        await page.type("input[autocomplete=current-password]", process.env.AOS_PASSWORD);
+        await page.click(`input[value="Войти в систему"]`);
+        await page.waitForNetworkIdle();
         console.log(`[${vin}] Авторизация выполнена`);
       }
 
@@ -53,7 +55,7 @@ let getCarInfo = async (vin) => {
       if (tryLoginAIR) {
         console.log(`[${vin}] Повторный переход в AIR...`);
         await page.goto("https://onl-osmc-b2i.bmwgroup.com/osmc/b2i/air/start.html?navigation=true&amp;langLong=ru-RU", { timeout: 10000 });
-        isLoginPage = await page.$eval("title", (title) => title.textContent == "AOS Login");
+        isLoginPage = await page.$eval("title", (title) => title.textContent == "WEB-EAM Next");
         await page.goto(await page.evaluate('document.getElementById("startlink").getAttribute("href")'), { timeout: 10000 });
         let cookies = JSON.stringify(await page.cookies(), null, 2);
         await fs.writeFile(__dirname + "/cookies/air.cookies", cookies);
@@ -71,7 +73,7 @@ let getCarInfo = async (vin) => {
       // Ввод VIN и переход на страницу автомобиля в AIR
 
       await page.goto("https://myair-bdr.bmwgroup.com/air/faces/xhtml/Start.xhtml?guid=");
-      isLoginPage = await page.$eval("title", (title) => title.textContent == "AOS Login");
+      isLoginPage = await page.$eval("title", (title) => title.textContent == "WEB-EAM Next");
       await page.type(".air-vinsearch-field", vin);
       await page.click(".air-vinsearch-button");
       await page.waitForTimeout(500);
