@@ -55,6 +55,7 @@ let getCarInfo = async (vin) => {
       if (tryLoginAIR) {
         console.log(`[${vin}] Повторный переход в AIR...`);
         await page.goto("https://onl-osmc-b2i.bmwgroup.com/osmc/b2i/air/start.html?navigation=true&amp;langLong=ru-RU", { timeout: 10000 });
+        await page.waitForNetworkIdle();
         isLoginPage = await page.$eval("title", (title) => title.textContent == "WEB-EAM Next");
         await page.goto(await page.evaluate('document.getElementById("startlink").getAttribute("href")'), { timeout: 10000 });
         let cookies = JSON.stringify(await page.cookies(), null, 2);
