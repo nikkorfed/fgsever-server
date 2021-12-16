@@ -272,7 +272,7 @@ function remove(option, shallow) {
     if (removeOption.required) for (let required of removeOption.required) if (typeof required != "object") this.remove(required);
 
     // Удаление содержащихся в ней опций
-    if (removeOption.contained) for (let contained of removeOption.contained) this.remove(contained);
+    if (removeOption.contained) for (let contained of removeOption.contained) this.remove(contained, true);
 
     // Удаление включённых в неё опций
     if (removeOption.included) for (let included of removeOption.included) this.remove(included);
