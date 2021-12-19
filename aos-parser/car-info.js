@@ -74,6 +74,7 @@ let getCarInfo = async (vin) => {
       // Ввод VIN и переход на страницу автомобиля в AIR
 
       await page.goto("https://myair-bdr.bmwgroup.com/air/faces/xhtml/Start.xhtml?guid=");
+      await page.waitForNetworkIdle();
       isLoginPage = await page.$eval("title", (title) => title.textContent == "WEB-EAM Next");
       await page.type(".air-vinsearch-field", vin);
       await page.click(".air-vinsearch-button");
