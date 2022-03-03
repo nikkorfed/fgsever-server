@@ -1,5 +1,6 @@
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
+const moment = require("moment");
 const fs = require("fs").promises;
 
 const headless = process.env.HEADLESS === "true";
@@ -32,6 +33,41 @@ let getCarInfo = async (vin) => {
   const page = await browser.newPage();
   await page.setViewport({ width: 1440, height: 900 });
   await page.setExtraHTTPHeaders({ "Accept-Language": "ru-RU" });
+
+  // Поиск данных на cats.parts
+
+  await page.goto("https://cats.parts/");
+  await page.waitForNetworkIdle();
+  await page.type("input#search-vin", vin);
+  await page.click(`a#search-vin-btn`);
+  await page.waitForNetworkIdle();
+  await page.click(".bmw-catalog-vin-decode-see a");
+  await page.waitForNetworkIdle();
+
+  result.image = await page.$eval(".etk-mospid-carinfo-image img", (image) => image.src);
+  result.model = await page.$eval(".etk-mospid-carinfo-text .div-tr:first-child .etk-mospid-carinfo-value", (e) => e.textContent);
+
+  const info = await page.$$eval(".bmw-asap-carinfo-table .div-tr", (rows) => {
+    let entries = rows.map((row) => [row.querySelector(".div-td-name").textContent, row.querySelector(".div-td-value").textContent]);
+    return Object.fromEntries(entries);
+  });
+
+  result.vin = info["VIN"];
+  result.modelCode = info["Серия"].trim();
+  result.productionDate = moment(info["Изготовлено"]).format("DD.MM.YYYY");
+
+  const options = await page.$$eval(".bmw-asap-carinfo-options-table .div-tr", (rows) => {
+    let entries = rows.map((row) => [
+      row.querySelector(".div-td-opt-code")?.textContent,
+      row.querySelector(".div-td-opt-value")?.textContent,
+    ]);
+    return Object.fromEntries(entries);
+  });
+
+  result.options = { factory: options };
+
+  await browser.close();
+  return result;
 
   do {
     try {
