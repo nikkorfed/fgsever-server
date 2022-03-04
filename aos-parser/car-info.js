@@ -64,7 +64,7 @@ let getCarInfo = async (vin) => {
     return Object.fromEntries(entries);
   });
 
-  result.options = { factory: options };
+  result.options = { factory: options, installed: {} };
 
   await browser.close();
   return result;
