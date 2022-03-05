@@ -35,6 +35,7 @@ let getCarInfo = async (vin) => {
   const page = await browser.newPage();
   await page.setViewport({ width: 1440, height: 900 });
   await page.setExtraHTTPHeaders({ "Accept-Language": "ru-RU" });
+  page.on("dialog", async (dialog) => await dialog.dismiss());
 
   // Поиск данных на cats.parts
 
@@ -46,24 +47,24 @@ let getCarInfo = async (vin) => {
       await page.waitForNetworkIdle();
       await page.type("input#search-vin", vin);
       await page.click(`a#search-vin-btn`);
-
-      page.on("dialog", async (dialog) => await dialog.dismiss());
-      await page.waitForNetworkIdle();
-
-      await page.click(".bmw-catalog-vin-decode-see a");
       await page.waitForNetworkIdle();
 
       result.image = await page.$eval(".etk-mospid-carinfo-image img", (image) => image.src);
       result.model = await page.$eval(".etk-mospid-carinfo-text .div-tr:first-child .etk-mospid-carinfo-value", (e) => e.textContent);
 
-      const info = await page.$$eval(".bmw-asap-carinfo-table .div-tr", (rows) => {
-        let entries = rows.map((row) => [row.querySelector(".div-td-name").textContent, row.querySelector(".div-td-value").textContent]);
-        return Object.fromEntries(entries);
-      });
+      await page.click(".bmw-catalog-vin-decode-see a").catch(() => {});
+      await page.waitForNetworkIdle();
 
-      result.vin = info["VIN"];
-      result.modelCode = info["Серия"].trim();
-      result.productionDate = moment(info["Изготовлено"]).format("DD.MM.YYYY");
+      const info = await page
+        .$$eval(".bmw-asap-carinfo-table .div-tr", (rows) => {
+          let entries = rows.map((row) => [row.querySelector(".div-td-name").textContent, row.querySelector(".div-td-value").textContent]);
+          return Object.fromEntries(entries);
+        })
+        .catch(() => ({}));
+
+      result.vin = info["VIN"] ?? vin;
+      result.modelCode = info["Серия"]?.trim();
+      result.productionDate = info["Изготовлено"] && moment(info["Изготовлено"]).format("DD.MM.YYYY");
 
       const options = await page.$$eval(".bmw-asap-carinfo-options-table .div-tr", (rows) => {
         let entries = rows.map((row) => [
