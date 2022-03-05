@@ -19,9 +19,11 @@ let getCarInfo = async (vin) => {
 
   console.log(`[${vin}] Поиск данных автомобиля...`);
   let result = {},
-    isLoginPage = false,
-    tryLoginAIR = false,
-    loginAIRTries = 0;
+    tryCatsParts = false,
+    catsPartsTries = 0;
+  // isLoginPage = false,
+  // tryLoginAIR = false,
+  // loginAIRTries = 0;
 
   // Запуск браузера
 
@@ -36,38 +38,63 @@ let getCarInfo = async (vin) => {
 
   // Поиск данных на cats.parts
 
-  await page.goto("https://cats.parts/");
-  await page.waitForNetworkIdle();
-  await page.type("input#search-vin", vin);
-  await page.click(`a#search-vin-btn`);
-  await page.waitForNetworkIdle();
-  await page.click(".bmw-catalog-vin-decode-see a");
-  await page.waitForNetworkIdle();
+  do {
+    try {
+      catsPartsTries++;
 
-  result.image = await page.$eval(".etk-mospid-carinfo-image img", (image) => image.src);
-  result.model = await page.$eval(".etk-mospid-carinfo-text .div-tr:first-child .etk-mospid-carinfo-value", (e) => e.textContent);
+      await page.goto("https://cats.parts/");
+      await page.waitForNetworkIdle();
+      await page.type("input#search-vin", vin);
+      await page.click(`a#search-vin-btn`);
 
-  const info = await page.$$eval(".bmw-asap-carinfo-table .div-tr", (rows) => {
-    let entries = rows.map((row) => [row.querySelector(".div-td-name").textContent, row.querySelector(".div-td-value").textContent]);
-    return Object.fromEntries(entries);
-  });
+      page.on("dialog", async (dialog) => await dialog.dismiss());
+      await page.waitForNetworkIdle();
 
-  result.vin = info["VIN"];
-  result.modelCode = info["Серия"].trim();
-  result.productionDate = moment(info["Изготовлено"]).format("DD.MM.YYYY");
+      await page.click(".bmw-catalog-vin-decode-see a");
+      await page.waitForNetworkIdle();
 
-  const options = await page.$$eval(".bmw-asap-carinfo-options-table .div-tr", (rows) => {
-    let entries = rows.map((row) => [
-      row.querySelector(".div-td-opt-code")?.textContent,
-      row.querySelector(".div-td-opt-value")?.textContent,
-    ]);
-    return Object.fromEntries(entries);
-  });
+      result.image = await page.$eval(".etk-mospid-carinfo-image img", (image) => image.src);
+      result.model = await page.$eval(".etk-mospid-carinfo-text .div-tr:first-child .etk-mospid-carinfo-value", (e) => e.textContent);
 
-  result.options = { factory: options, installed: {} };
+      const info = await page.$$eval(".bmw-asap-carinfo-table .div-tr", (rows) => {
+        let entries = rows.map((row) => [row.querySelector(".div-td-name").textContent, row.querySelector(".div-td-value").textContent]);
+        return Object.fromEntries(entries);
+      });
+
+      result.vin = info["VIN"];
+      result.modelCode = info["Серия"].trim();
+      result.productionDate = moment(info["Изготовлено"]).format("DD.MM.YYYY");
+
+      const options = await page.$$eval(".bmw-asap-carinfo-options-table .div-tr", (rows) => {
+        let entries = rows.map((row) => [
+          row.querySelector(".div-td-opt-code")?.textContent,
+          row.querySelector(".div-td-opt-value")?.textContent,
+        ]);
+        return Object.fromEntries(entries);
+      });
+
+      result.options = { factory: options, installed: {} };
+      tryCatsParts = false;
+    } catch (err) {
+      console.log(`[${vin}] В cats.parts что-то пошло не так :(`);
+      console.log(`[${vin}]`, err);
+      tryCatsParts = true;
+    }
+
+    if (catsPartsTries == 3) break;
+  } while (tryCatsParts);
+
+  // Завершение работы браузера и возврат найденных данных
 
   await browser.close();
-  return result;
+  if (Object.keys(result).length) {
+    console.log(`[${vin}] Данные автомобиля в cats.parts успешно найдены!`);
+    fs.writeFile(__dirname + `/cache/${vin}.json`, JSON.stringify(result));
+    return result;
+  } else {
+    console.log(`[${vin}] Данные автомобиля найти не удалось!`);
+    return { error: "car-info-not-found" };
+  }
 
   do {
     try {
