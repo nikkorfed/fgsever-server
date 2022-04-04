@@ -1,8 +1,7 @@
 node_modules/
 .DS_Store
 
-data/
-logs/
-aos-parser/cache
-aos-parser/cookies
-survey/data
+services/*/cache
+services/*/cookies
+services/*/data
+services/*/logs
