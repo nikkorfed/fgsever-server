@@ -1,7 +1,7 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs").promises;
 
-let getCarImages = async (vin, hostname) => {
+let getCarImagesFromAos = async (vin, hostname) => {
   if (!(vin.length == 7 || vin.length == 17)) return { error: "wrong-vin" };
 
   console.log(`[${vin}] Поиск изображений автомобиля...`);
@@ -164,4 +164,4 @@ let getCarImages = async (vin, hostname) => {
   }
 };
 
-module.exports = getCarImages;
+module.exports = getCarImagesFromAos;

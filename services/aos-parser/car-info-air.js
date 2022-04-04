@@ -1,13 +1,13 @@
 const axios = require("axios");
 const fs = require("fs/promises");
 
-let getCarInfo = async (vin) => {
+let getCarInfoFromAir = async (vin) => {
   if (!(vin.length == 7 || vin.length == 17)) return { error: "wrong-vin" };
   let result = {};
 
-  if (await fs.access(`./cache/${vin}.json`)) {
+  if (await fs.access(__dirname + `/cache/${vin}.json`)) {
     console.log(`[${vin}] Данные автомобиля найдены взяты из кэша!`);
-    return JSON.parse(await fs.readFile(`./cache/${vin}.json`));
+    return JSON.parse(await fs.readFile(__dirname + `/cache/${vin}.json`));
   }
 
   console.log(`[${vin}] Поиск данных автомобиля...`);
@@ -36,9 +36,9 @@ let getCarInfo = async (vin) => {
   result.options = { factory, installed };
   console.log(`[${vin}] Данные автомобиля в AIR успешно найдены!`);
 
-  if (!fs.access("./cache")) await fs.mkdir("./cache");
-  fs.writeFile(`./cache/${vin}.json`, JSON.stringify(result));
+  if (!fs.access(__dirname + "/cache")) await fs.mkdir(__dirname + "/cache");
+  fs.writeFile(__dirname + `/cache/${vin}.json`, JSON.stringify(result));
   return result;
 };
 
-module.exports = getCarInfo;
+module.exports = getCarInfoFromAir;
