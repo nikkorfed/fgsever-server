@@ -11,7 +11,7 @@ const doc = new GoogleSpreadsheet("1_9Dv5BNEkAx3e2c7bP58AhkctjyH9sMSR_8h8AGTnTY"
 //   console.log("\nФайл успешно сохранён!");
 // })();
 
-async function getOptions({ modelCode, productionDate, currentOptions }) {
+let getOptions = async ({ modelCode, productionDate, currentOptions }) => {
   await doc.useServiceAccountAuth(require("./credentials.json"));
   await doc.loadInfo();
 
@@ -144,9 +144,7 @@ async function getOptions({ modelCode, productionDate, currentOptions }) {
   for (let option in options) if (currentOptions.hasOption(options.toCode(option))) options.remove(option);
 
   return options;
-}
-
-module.exports = getOptions;
+};
 
 // Транслит названия опций
 function translit(input) {
@@ -321,3 +319,5 @@ function remove(option, shallow) {
   // Удаление самой исходной опции
   delete this[removeName];
 }
+
+module.exports = getOptions;
