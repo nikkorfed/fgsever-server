@@ -3,6 +3,9 @@ const fs = require("fs").promises;
 let getCarImagesFromCache = async (vin, hostname) => {
   if (!(vin.length == 7 || vin.length == 17)) return { error: "wrong-vin" };
 
+  const port = +process.env.PORT;
+  if (port !== 80) hostname += `:${port}`;
+
   let exists = await fs
     .access(__dirname + `/images/${vin}/`)
     .then((result) => true)
