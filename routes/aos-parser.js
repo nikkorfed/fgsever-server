@@ -2,7 +2,7 @@ const fs = require("fs/promises");
 const express = require("express");
 const router = express.Router();
 
-const { aosParser } = require("../controllers");
+const { aosParser } = require("~/controllers");
 
 // Папка с изображениями
 router.use("/images", express.static("services/aos-parser/images"));

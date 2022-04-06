@@ -2,7 +2,7 @@ const fs = require("fs/promises");
 const express = require("express");
 const router = express.Router();
 
-const { survey } = require("../controllers");
+const { survey } = require("~/controllers");
 
 // Парсинг тела запроса
 router.use(express.urlencoded({ extended: false }));

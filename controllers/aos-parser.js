@@ -1,5 +1,5 @@
-const { getCarInfoFromAos, getCarInfoFromCats, getCarInfoFromAir } = require("../services/aos-parser");
-const { getCarImagesFromAos, getCarImagesFromCache } = require("../services/aos-parser");
+const { getCarInfoFromAos, getCarInfoFromCats, getCarInfoFromAir } = require("~/services/aos-parser");
+const { getCarImagesFromAos, getCarImagesFromCache } = require("~/services/aos-parser");
 
 exports.getCarInfo = async (req, res) => {
   const { vin, from } = req.query;

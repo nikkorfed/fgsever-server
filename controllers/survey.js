@@ -1,4 +1,4 @@
-const { saveAnswer } = require("../services/survey");
+const { saveAnswer } = require("~/services/survey");
 
 exports.index = async (req, res) => {
   return res.send("Здесь будут приниматься анкеты!");

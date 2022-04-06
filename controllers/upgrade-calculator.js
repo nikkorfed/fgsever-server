@@ -1,4 +1,4 @@
-const { getOptions } = require("../services/upgrade-calculator");
+const { getOptions } = require("~/services/upgrade-calculator");
 
 exports.getOptions = async (req, res) => {
   const { modelCode, productionDate, currentOptions } = req.body;
