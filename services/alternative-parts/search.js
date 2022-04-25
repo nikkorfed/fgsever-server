@@ -1,3 +1,4 @@
+const _ = require("lodash");
 const fs = require("fs/promises");
 const slugify = require("slugify");
 const axios = require("axios").default;
@@ -37,24 +38,24 @@ let search = async (number) => {
   });
   const externalAnalogs = externalAnalogsResponse.data;
 
-  const analogs = [...pickBrands(internalAnalogs), ...pickBrands(externalAnalogs, false)];
-  const result = pickPrices(analogs);
+  const [favoriteAnalogs, otherAnalogs] = _.partition([...internalAnalogs, ...externalAnalogs], isFavoriteAnalog);
+  const result = pickPrices([...favoriteAnalogs, ...otherAnalogs]);
+  // const result = pickPrices([...internalAnalogs, ...otherAnalogs]);
   return result;
 };
 
-// Отбор подходящих производителей
-let pickBrands = (parts, findBMWInText = true) => {
-  if (!parts || parts["message"]) return [];
+// Отделение избранных производителей
+let isFavoriteAnalog = (part) => {
+  let { tradeMarkName: name, description } = part.partInfo;
 
-  return parts.filter((part) => {
-    let { tradeMarkName: name, description, itemComment: comment } = part.partInfo;
-
-    if (findBMWInText && !comment.match(/BMW/i)) return false;
-    if (description.match(/фильтр воздушный|фильтр салона/i) && name.match(/KNECHT|MANN|MANN-FILTER|BOSCH|CORTECO|MAHLE/i)) return true;
-    if (description.match(/фильтр/i) && name.match(/KNECHT|MANN|MAHLE/i)) return true;
-    if (description.match(/свеча/i) && name.match(/CHAMPION|BOSCH|NGK/i)) return true;
-    if (description.match(/тормоз|датчик|диск|disc/i) && name.match(/ATE|BOSCH|BREMBO|TEXTAR|TRW/i)) return true;
-  });
+  if (
+    (description.match(/фильтр воздушный|фильтр салона/i) && name.match(/KNECHT|MANN|MANN-FILTER|BOSCH|CORTECO|MAHLE/i)) ||
+    (description.match(/фильтр/i) && name.match(/KNECHT|MANN|MAHLE/i)) ||
+    (description.match(/свеча/i) && name.match(/CHAMPION|BOSCH|NGK/i)) ||
+    (description.match(/тормоз|датчик|диск|disc/i) && name.match(/ATE|BOSCH|BREMBO|TEXTAR|TRW/i))
+  ) {
+    return (part.partInfo.favorite = true);
+  }
 };
 
 // Отбор цен с подходящих складов
@@ -62,7 +63,7 @@ let pickPrices = (parts) => {
   const result = {};
 
   for (let part of parts) {
-    let { tradeMarkName: name, description, article: number, itemComment: comment } = part.partInfo;
+    let { tradeMarkName: name, description, article: number, itemComment: comment, favorite } = part.partInfo;
     let key = slugify(name, { lower: true });
 
     if (comment?.includes("угольный")) {
@@ -79,6 +80,7 @@ let pickPrices = (parts) => {
           description,
           number,
           price: price["price"] * 1.3,
+          favorite,
         };
         break;
       } else if (price["city"] == "Екатеринбург") {
@@ -87,6 +89,7 @@ let pickPrices = (parts) => {
           description,
           number,
           price: price["price"] * 1.3,
+          favorite,
         };
         break;
       } else {
@@ -95,6 +98,7 @@ let pickPrices = (parts) => {
           description,
           number,
           price: price["price"] * 1.3,
+          favorite,
           comment: "От сторонних поставщиков",
         };
         break;
