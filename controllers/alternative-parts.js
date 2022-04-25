@@ -6,7 +6,7 @@ exports.search = async (req, res) => {
   if (!number) return res.send({ error: "no-part-number" });
 
   const parts = await search(number);
-  if (!parts) return res.send({ error: "no-alternatives" });
+  if (!parts || !Object.keys(parts).length) return res.send({ error: "no-alternatives" });
 
   return res.send(parts);
 };
