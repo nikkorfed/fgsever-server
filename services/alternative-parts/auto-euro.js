@@ -22,11 +22,16 @@ let searchInAutoEuro = async (number, config = {}) => {
   await page.setExtraHTTPHeaders({ "Accept-Language": "ru-RU" });
 
   // Авторизация
-  await page.goto("https://shop.autoeuro.ru");
-  await page.type("input#username", username);
-  await page.type("input#password", password);
-  await page.click("div#login");
-  await page.waitForNavigation();
+  const cookies = JSON.parse(await fs.readFile(__dirname + "/cookies/auto-euro.json").catch(() => null));
+  if (!cookies) {
+    await page.goto("https://shop.autoeuro.ru");
+    await page.type("input#username", username);
+    await page.type("input#password", password);
+    await page.click("div#login");
+    await page.waitForNavigation();
+    const cookies = await page.cookies();
+    await fs.writeFile(__dirname + "/cookies/auto-euro.json", JSON.stringify(cookies, null, 2));
+  } else await page.setCookie(...cookies);
 
   // Запрос информации об оригинальной запчасти
   await page.goto("https://shop.autoeuro.ru/main/search");
@@ -43,7 +48,7 @@ let searchInAutoEuro = async (number, config = {}) => {
     });
     const searchButton = await originalPart.$(".go_search");
     await searchButton.click();
-    await page.waitForNavigation();
+    await page.waitForNavigation({ waitUntil: "domcontentloaded" });
   }
 
   const content = await page.content();
