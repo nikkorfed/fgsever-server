@@ -5,7 +5,7 @@ const axios = require("axios").default;
 
 const { cookie } = require("./utils");
 
-let search = async (number) => {
+let searchInShateM = async (number) => {
   // Авторизация
   const authData = { login: "MIKANIA", password: "4996383577", rememberMe: true };
   const authResponse = await axios.post("https://shate-m.ru/Account/Login", authData);
@@ -39,11 +39,12 @@ let search = async (number) => {
   const externalAnalogs = externalAnalogsResponse.data;
 
   const [favoriteAnalogs, otherAnalogs] = _.partition([...internalAnalogs, ...externalAnalogs], isFavoriteAnalog);
-  const result = pickPrices([...favoriteAnalogs, ...otherAnalogs]);
-  // const result = pickPrices([...internalAnalogs, ...otherAnalogs]);
+  const result = prepareParts([...favoriteAnalogs, ...otherAnalogs]);
+  // const result = prepareParts([...internalAnalogs, ...externalAnalogs]);
   return result;
 };
 
+// TODO: Extract this function to use after picking prices on prepared parts from different suppliers.
 // Отделение избранных производителей
 let isFavoriteAnalog = (part) => {
   let { tradeMarkName: name, description } = part.partInfo;
@@ -58,12 +59,12 @@ let isFavoriteAnalog = (part) => {
   }
 };
 
-// Отбор цен с подходящих складов
-let pickPrices = (parts) => {
+// Подготовка запчастей в подходящем формате
+let prepareParts = (parts) => {
   const result = {};
 
   for (let part of parts) {
-    let { tradeMarkName: name, description, article: number, itemComment: comment, favorite } = part.partInfo;
+    let { tradeMarkName: name, description, article: number, itemComment: comment } = part.partInfo;
     let key = slugify(name, { lower: true });
 
     if (comment?.includes("угольный")) {
@@ -73,40 +74,17 @@ let pickPrices = (parts) => {
 
     if (result[key]) continue;
 
-    for (let price of part["prices"]) {
-      if (price["city"] == "Подольск" || price["city"] == "Минск") {
-        result[key] = {
-          name,
-          description,
-          number,
-          price: price["price"] * 1.3,
-          favorite,
-        };
-        break;
-      } else if (price["city"] == "Екатеринбург") {
-        result[key] = {
-          name: name + " (Доставка " + price.deliveryInfo.deliveryDateTimes[1].deliveryDate + ")",
-          description,
-          number,
-          price: price["price"] * 1.3,
-          favorite,
-        };
-        break;
-      } else {
-        result[key] = {
-          name: name + " (Доставка " + price.deliveryInfo.deliveryDateTimes[1].deliveryDate + ")",
-          description,
-          number,
-          price: price["price"] * 1.3,
-          favorite,
-          comment: "От сторонних поставщиков",
-        };
-        break;
-      }
-    }
+    let price = part["prices"][0];
+
+    result[key] = {
+      name: price.deliveryInfo ? name + " (Доставка " + price.deliveryInfo.deliveryDateTimes[1].deliveryDate + ")" : name,
+      description,
+      number,
+      price: price["price"] * 1.3,
+    };
   }
 
   return result;
 };
 
-module.exports = search;
+module.exports = searchInShateM;
