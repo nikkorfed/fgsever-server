@@ -11,7 +11,9 @@ const headless = process.env.HEADLESS === "true";
 const username = "riverdale";
 const password = "riverdale";
 
-let searchInAutoEuro = async (number) => {
+let searchInAutoEuro = async (number, config = {}) => {
+  config.externalAnalogs = config.externalAnalogs ?? true;
+
   // Запуск браузера
   const browser = await puppeteer.launch({ headless, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
   const pages = await browser.pages();
@@ -46,6 +48,7 @@ let searchInAutoEuro = async (number) => {
 
   const content = await page.content();
   const $ = cheerio.load(content);
+  await browser.close();
 
   // Аналоги c собственных складов
   const internalAnalogs = $(".proposals-2").toArray();
@@ -54,10 +57,8 @@ let searchInAutoEuro = async (number) => {
   const externalAnalogs = $(".proposals-3").toArray();
 
   // Подготовка запчастей
-  const result = prepareParts([...internalAnalogs, ...externalAnalogs]);
-
-  // Завершение работы браузера
-  await browser.close();
+  const analogs = config.externalAnalogs ? [...internalAnalogs, ...externalAnalogs] : internalAnalogs;
+  const result = prepareParts(analogs);
 
   return result;
 };

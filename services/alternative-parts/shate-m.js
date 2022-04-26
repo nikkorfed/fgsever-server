@@ -5,7 +5,9 @@ const axios = require("axios").default;
 
 const { cookie } = require("./utils");
 
-let searchInShateM = async (number) => {
+let searchInShateM = async (number, config = {}) => {
+  config.externalAnalogs = config.externalAnalogs ?? true;
+
   // Авторизация
   const authData = { login: "MIKANIA", password: "4996383577", rememberMe: true };
   const authResponse = await axios.post("https://shate-m.ru/Account/Login", authData);
@@ -38,9 +40,10 @@ let searchInShateM = async (number) => {
   });
   const externalAnalogs = externalAnalogsResponse.data;
 
-  const [favoriteAnalogs, otherAnalogs] = _.partition([...internalAnalogs, ...externalAnalogs], isFavoriteAnalog);
-  const result = prepareParts([...favoriteAnalogs, ...otherAnalogs]);
-  // const result = prepareParts([...internalAnalogs, ...externalAnalogs]);
+  // Подготовка запчастей
+  const analogs = config.externalAnalogs ? [...internalAnalogs, ...externalAnalogs] : internalAnalogs;
+  const result = prepareParts(analogs);
+
   return result;
 };
 
