@@ -2,10 +2,9 @@ const puppeteer = require("puppeteer");
 const _ = require("lodash");
 const fs = require("fs/promises");
 const slugify = require("slugify");
-const axios = require("axios").default;
 const cheerio = require("cheerio");
 
-const { cookie } = require("./utils");
+const { filterParts } = require("./utils");
 
 const headless = process.env.HEADLESS === "true";
 const username = "riverdale";
@@ -13,6 +12,7 @@ const password = "riverdale";
 
 let searchInAutoEuro = async (number, config = {}) => {
   config.externalAnalogs = config.externalAnalogs ?? true;
+  config.onlyFavorites = config.onlyFavorites ?? false;
 
   // Запуск браузера
   const browser = await puppeteer.launch({ headless, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
@@ -63,13 +63,13 @@ let searchInAutoEuro = async (number, config = {}) => {
 
   // Подготовка запчастей
   const analogs = config.externalAnalogs ? [...internalAnalogs, ...externalAnalogs] : internalAnalogs;
-  const result = prepareParts(analogs);
+  const result = filterParts(prepareParts(analogs), config);
 
   return result;
 };
 
 // Подготовка запчастей в подходящем формате
-let prepareParts = async (parts) => {
+let prepareParts = (parts) => {
   const result = {};
 
   for (let part of parts) {

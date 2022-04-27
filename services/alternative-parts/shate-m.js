@@ -3,10 +3,11 @@ const fs = require("fs/promises");
 const slugify = require("slugify");
 const axios = require("axios").default;
 
-const { cookie } = require("./utils");
+const { cookie, filterParts } = require("./utils");
 
 let searchInShateM = async (number, config = {}) => {
   config.externalAnalogs = config.externalAnalogs ?? true;
+  config.onlyFavorites = config.onlyFavorites ?? false;
 
   // Авторизация
   const authData = { login: "MIKANIA", password: "4996383577", rememberMe: true };
@@ -42,24 +43,9 @@ let searchInShateM = async (number, config = {}) => {
 
   // Подготовка запчастей
   const analogs = config.externalAnalogs ? [...internalAnalogs, ...externalAnalogs] : internalAnalogs;
-  const result = prepareParts(analogs);
+  const result = filterParts(prepareParts(analogs), config);
 
   return result;
-};
-
-// TODO: Extract this function to use after picking prices on prepared parts from different suppliers.
-// Отделение избранных производителей
-let isFavoriteAnalog = (part) => {
-  let { tradeMarkName: name, description } = part.partInfo;
-
-  if (
-    (description.match(/фильтр воздушный|фильтр салона/i) && name.match(/KNECHT|MANN|MANN-FILTER|BOSCH|CORTECO|MAHLE/i)) ||
-    (description.match(/фильтр/i) && name.match(/KNECHT|MANN|MAHLE/i)) ||
-    (description.match(/свеча/i) && name.match(/CHAMPION|BOSCH|NGK/i)) ||
-    (description.match(/тормоз|датчик|диск|disc/i) && name.match(/ATE|BOSCH|BREMBO|TEXTAR|TRW/i))
-  ) {
-    return (part.partInfo.favorite = true);
-  }
 };
 
 // Подготовка запчастей в подходящем формате
