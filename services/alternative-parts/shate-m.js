@@ -48,6 +48,10 @@ let searchInShateM = async (number, config = {}) => {
   return result;
 };
 
+// TODO: Add parsePart() function for transforming the data the proper format.
+// Execute all preparations (key and name adjustments) in prepareResult() and extract it to util.
+// As well do all the filtering in it and get rid of filterParts().
+
 // Подготовка запчастей в подходящем формате
 let prepareParts = (parts) => {
   const result = {};
