@@ -1,7 +1,7 @@
 let filterParts = (parts, config) => {
   markFavorites(parts);
 
-  if (config.onlyFavorites) {
+  if (config.onlyFavorites === true) {
     const [favoriteAnalogs] = partition(parts, (part) => part.favorite);
     parts = favoriteAnalogs;
   }

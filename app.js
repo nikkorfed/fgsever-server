@@ -7,11 +7,12 @@ const app = express();
 
 const PORT = process.env.PORT || 3000;
 
-const { cors } = require("./middleware");
+const { cors, query } = require("./middleware");
 const routes = require("./routes");
 
 app.use(morgan("dev"));
 app.use(cors);
+app.use(query);
 app.use(routes);
 
 app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}...`));
