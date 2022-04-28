@@ -85,7 +85,6 @@ let prepareParts = (parts) => {
     let shipping = prepareDate(firstRow.find("td:nth-child(2) .custom-tooltip-informer").text());
 
     if (description?.match(/угол|углем/i)) {
-      key = "coal-" + key;
       name += ", угольный";
     }
 

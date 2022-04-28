@@ -61,7 +61,6 @@ let prepareParts = (parts) => {
     let key = slugify(name, { lower: true });
 
     if (comment?.includes("угольный")) {
-      key = "coal-" + key;
       name += ", угольный";
     }
 
