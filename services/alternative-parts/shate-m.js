@@ -73,6 +73,7 @@ let prepareParts = (parts) => {
       description,
       number,
       price: price["price"] * 1.3,
+      from: "shate-m",
     };
   }
 
