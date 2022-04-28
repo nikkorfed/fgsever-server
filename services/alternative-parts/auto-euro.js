@@ -22,19 +22,27 @@ let searchInAutoEuro = async (number, config = {}) => {
   await page.setExtraHTTPHeaders({ "Accept-Language": "ru-RU" });
 
   // Авторизация
-  const cookies = JSON.parse(await fs.readFile(__dirname + "/cookies/auto-euro.json").catch(() => null));
-  if (!cookies) {
-    await page.goto("https://shop.autoeuro.ru");
-    await page.type("input#username", username);
-    await page.type("input#password", password);
-    await page.click("div#login");
-    await page.waitForNavigation();
-    const cookies = await page.cookies();
-    await fs.writeFile(__dirname + "/cookies/auto-euro.json", JSON.stringify(cookies, null, 2));
-  } else await page.setCookie(...cookies);
+  let tryLogin = false,
+    loginTries = 0;
+  do {
+    loginTries++;
+    const cookies = JSON.parse(await fs.readFile(__dirname + "/cookies/auto-euro.json").catch(() => null));
+    if (!cookies || tryLogin) {
+      await page.goto("https://shop.autoeuro.ru");
+      await page.type("input#username", username);
+      await page.type("input#password", password);
+      await page.click("div#login");
+      await page.waitForNavigation();
+      const cookies = await page.cookies();
+      await fs.writeFile(__dirname + "/cookies/auto-euro.json", JSON.stringify(cookies, null, 2));
+    } else await page.setCookie(...cookies);
+    await page.goto("https://shop.autoeuro.ru/main/search");
+    const authTitle = await page.$eval("#authtitle", (element) => element.textContent);
+    tryLogin = authTitle.includes("ВЫ НЕ АВТОРИЗОВАНЫ");
+    if (loginTries == 3) break;
+  } while (tryLogin);
 
   // Запрос информации об оригинальной запчасти
-  await page.goto("https://shop.autoeuro.ru/main/search");
   await page.type("input#search_text_input2", number);
   await page.click("span#search_one_button");
   await page.waitForNavigation();
