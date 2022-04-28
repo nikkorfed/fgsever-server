@@ -60,7 +60,7 @@ let searchInAutoEuro = async (number, config = {}) => {
     });
     const searchButton = await originalPart.$(".go_search");
     await searchButton.click();
-    await page.waitForNavigation({ waitUntil: "domcontentloaded" });
+    await page.waitForSelector("#variants");
   }
 
   const content = await page.content();
