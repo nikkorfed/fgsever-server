@@ -1,10 +1,8 @@
-const _ = require("lodash");
-
 let filterParts = (parts, config) => {
   markFavorites(parts);
 
   if (config.onlyFavorites) {
-    const [favoriteAnalogs] = _.partition(parts, (part) => part.favorite);
+    const [favoriteAnalogs] = partition(parts, (part) => part.favorite);
     parts = favoriteAnalogs;
   }
 
@@ -23,6 +21,17 @@ let markFavorites = (parts) => {
       parts[key].favorite = true;
     }
   }
+};
+
+let partition = (object, callback) => {
+  const truthy = {};
+  const falsy = {};
+
+  for (const key in object) {
+    callback(object[key]) ? (truthy[key] = object[key]) : (falsy[key] = object[key]);
+  }
+
+  return [truthy, falsy];
 };
 
 module.exports = filterParts;
