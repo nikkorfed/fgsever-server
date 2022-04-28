@@ -403,5 +403,32 @@
     "rearAxleFinalDriveOil": 800,
     "transferCaseOil": 1200,
     "radiatorsWash": 15000
+  },
+  "z4": {
+    "motorOil": 900,
+    "oilFilter": 900,
+    "sparkPlugs": 2400,
+    "fuelFilter": 1800,
+    "airFilter": 400,
+    "cabinAirFilter": 1000,
+    "recirculationFilter": 1000,
+    "frontBrakeDisks": 3800,
+    "rearBrakeDisks": 4500,
+    "frontBrakePads": 2500,
+    "rearBrakePads": 3000,
+    "frontBrakePadsWearSensor": 0,
+    "rearBrakePadsWearSensor": 0,
+    "chassisDiagnostics": 1000,
+    "computerDiagnostics": 1500,
+    "carDiagnostics": 2100,
+    "brakeFluid": 2000,
+    "brakeFluidWithMaterials": 2700,
+    "coolant": 3000,
+    "gearBoxOil": 5500,
+    "gearBoxOilWithMaterials": 20000,
+    "frontAxleFinalDriveOil": 1600,
+    "rearAxleFinalDriveOil": 800,
+    "transferCaseOil": 1200,
+    "radiatorsWash": 15000
   }
 }
