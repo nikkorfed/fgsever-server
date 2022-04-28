@@ -3,6 +3,10 @@ const _ = require("lodash");
 const fs = require("fs/promises");
 const slugify = require("slugify");
 const cheerio = require("cheerio");
+const moment = require("moment");
+
+require("moment/locale/ru");
+moment.locale("ru");
 
 const { filterParts } = require("./utils");
 
@@ -111,26 +115,11 @@ let prepareParts = (parts) => {
 };
 
 let prepareDate = (text) => {
-  const replaceMap = {
-    января: "01",
-    февраля: "02",
-    марта: "03",
-    апреля: "04",
-    мая: "05",
-    июня: "06",
-    июля: "07",
-    августа: "08",
-    сентября: "09",
-    октября: "10",
-    ноября: "11",
-    декабря: "12",
-  };
-
-  text = text.replace(/\s+/g, " ");
+  text = text.replace(/[\s,]+/g, " ");
   text = text.slice(0, text.indexOf("до")).trim();
 
-  let month = text.split(" ")[1];
-  text = text.replace(month, replaceMap[month]).replace(" ", ".");
+  if (text === "завтра") text = moment().add(1, "day").format("DD.MM");
+  else text = moment(text, "D MMMM").format("DD.MM");
 
   return ` (Доставка ${text})`;
 };
