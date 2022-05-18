@@ -14,8 +14,10 @@ const username = "riverdale";
 const password = "riverdale";
 
 let searchInAutoEuro = async (number, config = {}) => {
+  config.originalParts = config.originalParts ?? true;
   config.externalAnalogs = config.externalAnalogs ?? true;
   config.onlyFavorites = config.onlyFavorites ?? false;
+  config.originalNumber = number;
 
   // Запуск браузера
   const browser = await puppeteer.launch({ headless, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
@@ -66,14 +68,17 @@ let searchInAutoEuro = async (number, config = {}) => {
   const $ = cheerio.load(content);
   await browser.close();
 
+  // Оригинальные запчасти
+  const originalParts = config.originalParts ? $(".proposals-1").toArray() : [];
+
   // Аналоги c собственных складов
   const internalAnalogs = $(".proposals-2").toArray();
 
   // Аналоги у сторонних поставщиков
-  const externalAnalogs = $(".proposals-3").toArray();
+  const externalAnalogs = config.externalAnalogs ? $(".proposals-3").toArray() : [];
 
   // Подготовка запчастей
-  const parts = config.externalAnalogs ? [...internalAnalogs, ...externalAnalogs] : internalAnalogs;
+  const parts = [...originalParts, ...internalAnalogs, externalAnalogs];
   const result = prepareResult(parseParts(parts), config);
 
   return result;

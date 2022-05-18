@@ -5,8 +5,10 @@ const axios = require("axios").default;
 const { cookie, prepareResult } = require("./utils");
 
 let searchInShateM = async (number, config = {}) => {
+  config.originalParts = config.originalParts ?? true;
   config.externalAnalogs = config.externalAnalogs ?? true;
   config.onlyFavorites = config.onlyFavorites ?? false;
+  config.originalNumber = number;
 
   // Авторизация
   const authData = { login: "MIKANIA", password: "4996383577", rememberMe: true };
@@ -15,16 +17,23 @@ let searchInShateM = async (number, config = {}) => {
   const cookies = cookie.parseSetCookie(authResponse.headers["set-cookie"]);
   await fs.writeFile(__dirname + "/cookies/shate-m.txt", cookies);
 
-  // Запрос информации об оригинальной запчасти
-  const originalPartsResponse = await axios.get("https://shate-m.ru/api/SearchPart/PartsByNumber", {
+  // Запрос информации о запчастях по производителям
+  const brandPartsResponse = await axios.get("https://shate-m.ru/api/SearchPart/PartsByNumber", {
     params: { number },
     headers: { cookie: cookies },
   });
-  const originalParts = originalPartsResponse.data;
+  const brandParts = brandPartsResponse.data;
 
   // Узнаём ID запчасти для BMW
-  const originalPart = originalParts.find((item) => item.tradeMarkName === "BMW");
+  const originalPart = brandParts.find((item) => item.tradeMarkName === "BMW");
   const originalPartId = originalPart.id;
+
+  // Запрос оригинальных запчастей
+  const originalPartsResponse = await axios.get("ttps://shate-m.ru/api/searchPart/GetOriginalsInternalPrices", {
+    params: { partId: originalPartId },
+    headers: { cookie: cookies },
+  });
+  const originalParts = config.originalParts ? originalPartsResponse.data : [];
 
   // Запрос аналогов c собственных складов shate-m
   const internalAnalogsResponse = await axios.get("https://shate-m.ru/api/searchPart/GetAnalogsInternalPrices", {
@@ -38,10 +47,10 @@ let searchInShateM = async (number, config = {}) => {
     params: { partId: originalPartId },
     headers: { cookie: cookies },
   });
-  const externalAnalogs = externalAnalogsResponse.data;
+  const externalAnalogs = config.externalAnalogs ? externalAnalogsResponse.data : [];
 
   // Подготовка запчастей
-  const parts = config.externalAnalogs ? [...internalAnalogs, ...externalAnalogs] : internalAnalogs;
+  const parts = [...originalParts, ...internalAnalogs, ...externalAnalogs];
   const result = prepareResult(parseParts(parts), config);
 
   return result;

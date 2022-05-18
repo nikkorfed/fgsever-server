@@ -13,10 +13,10 @@ let markFavorites = (parts) => {
   for (const key in parts) {
     let { name, description } = parts[key];
     if (
-      (description.match(/фильтр воздушный|фильтр салона/i) && name.match(/KNECHT|MANN|MANN-FILTER|BOSCH|CORTECO|MAHLE/i)) ||
-      (description.match(/фильтр/i) && name.match(/KNECHT|MANN|MAHLE/i)) ||
-      (description.match(/свеча/i) && name.match(/CHAMPION|BOSCH|NGK/i)) ||
-      (description.match(/тормоз|датчик|диск|disc/i) && name.match(/ATE|BOSCH|BREMBO|TEXTAR|TRW/i))
+      (description.match(/фильтр воздушный|фильтр салона/i) && name.match(/BMW|KNECHT|MANN|MANN-FILTER|BOSCH|CORTECO|MAHLE/i)) ||
+      (description.match(/фильтр/i) && name.match(/BMW|KNECHT|MANN|MAHLE/i)) ||
+      (description.match(/свеча/i) && name.match(/BMW|CHAMPION|BOSCH|NGK/i)) ||
+      (description.match(/тормоз|датчик|диск|disc/i) && name.match(/BMW|ATE|BOSCH|BREMBO|TEXTAR|TRW/i))
     ) {
       parts[key].favorite = true;
     }
