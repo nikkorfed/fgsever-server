@@ -11,9 +11,7 @@ let search = async (number, config = {}) => {
   const [shateMAnalogs, autoEuroAnalogs] = await Promise.all([searchInShateM(number, config), searchInAutoEuro(number, config)]);
 
   // Подготовка запчастей
-  const analogs = mergeParts(shateMAnalogs, autoEuroAnalogs);
-  const result = filterParts(analogs, config);
-
+  const result = mergeParts(shateMAnalogs, autoEuroAnalogs);
   return result;
 };
 

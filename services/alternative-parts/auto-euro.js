@@ -1,14 +1,13 @@
 const puppeteer = require("puppeteer");
 const _ = require("lodash");
 const fs = require("fs/promises");
-const slugify = require("slugify");
 const cheerio = require("cheerio");
 const moment = require("moment");
 
 require("moment/locale/ru");
 moment.locale("ru");
 
-const { filterParts } = require("./utils");
+const { prepareResult } = require("./utils");
 
 const headless = process.env.HEADLESS === "true";
 const username = "riverdale";
@@ -74,54 +73,45 @@ let searchInAutoEuro = async (number, config = {}) => {
   const externalAnalogs = $(".proposals-3").toArray();
 
   // Подготовка запчастей
-  const analogs = config.externalAnalogs ? [...internalAnalogs, ...externalAnalogs] : internalAnalogs;
-  const result = filterParts(prepareParts(analogs), config);
+  const parts = config.externalAnalogs ? [...internalAnalogs, ...externalAnalogs] : internalAnalogs;
+  const result = prepareResult(parseParts(parts), config);
 
   return result;
 };
 
-// Подготовка запчастей в подходящем формате
-let prepareParts = (parts) => {
-  const result = {};
-
-  for (let part of parts) {
+let parseParts = (parts) => {
+  return parts.map((part) => {
     const $ = cheerio.load(part);
 
     let name = $("h4 span").attr("data-maker_name");
     let description = $("h4 span").attr("data-name");
     let number = $("h4 span").attr("data-code");
-    let key = slugify(name, { lower: true });
 
     let firstRow = $(".search_result_table .tb-best .row:first-child");
     let price = +firstRow.find("td:nth-child(6)").text().replace(/[\s₽]/g, "");
     let shipping = prepareDate(firstRow.find("td:nth-child(2) .custom-tooltip-informer").text());
 
-    if (description?.match(/угол|углем/i)) {
-      name += ", угольный";
-    }
-
-    if (result[key]) continue;
-
-    result[key] = {
-      name: name + shipping,
+    return {
+      name,
       description,
       number,
-      price: price * 1.3,
+      price,
+      shipping,
       from: "auto-euro",
     };
-  }
-
-  return result;
+  });
 };
 
 let prepareDate = (text) => {
+  if (!text) return text;
+
   text = text.replace(/[\s,]+/g, " ");
   text = text.slice(0, text.indexOf("до")).trim();
 
   if (text === "завтра") text = moment().add(1, "day").format("DD.MM");
   else text = moment(text, "D MMMM").format("DD.MM");
 
-  return ` (Доставка ${text})`;
+  return text;
 };
 
 module.exports = searchInAutoEuro;

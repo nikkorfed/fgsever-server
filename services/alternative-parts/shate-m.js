@@ -1,9 +1,8 @@
 const _ = require("lodash");
 const fs = require("fs/promises");
-const slugify = require("slugify");
 const axios = require("axios").default;
 
-const { cookie, filterParts } = require("./utils");
+const { cookie, prepareResult } = require("./utils");
 
 let searchInShateM = async (number, config = {}) => {
   config.externalAnalogs = config.externalAnalogs ?? true;
@@ -17,14 +16,14 @@ let searchInShateM = async (number, config = {}) => {
   await fs.writeFile(__dirname + "/cookies/shate-m.txt", cookies);
 
   // Запрос информации об оригинальной запчасти
-  const partsResponse = await axios.get("https://shate-m.ru/api/SearchPart/PartsByNumber", {
+  const originalPartsResponse = await axios.get("https://shate-m.ru/api/SearchPart/PartsByNumber", {
     params: { number },
     headers: { cookie: cookies },
   });
-  const parts = partsResponse.data;
+  const originalParts = originalPartsResponse.data;
 
   // Узнаём ID запчасти для BMW
-  const originalPart = parts.find((item) => item.tradeMarkName === "BMW");
+  const originalPart = originalParts.find((item) => item.tradeMarkName === "BMW");
   const originalPartId = originalPart.id;
 
   // Запрос аналогов c собственных складов shate-m
@@ -42,42 +41,27 @@ let searchInShateM = async (number, config = {}) => {
   const externalAnalogs = externalAnalogsResponse.data;
 
   // Подготовка запчастей
-  const analogs = config.externalAnalogs ? [...internalAnalogs, ...externalAnalogs] : internalAnalogs;
-  const result = filterParts(prepareParts(analogs), config);
+  const parts = config.externalAnalogs ? [...internalAnalogs, ...externalAnalogs] : internalAnalogs;
+  const result = prepareResult(parseParts(parts), config);
 
   return result;
 };
 
-// TODO: Add parsePart() function for transforming the data the proper format.
-// Execute all preparations (key and name adjustments) in prepareResult() and extract it to util.
-// As well do all the filtering in it and get rid of filterParts().
-
-// Подготовка запчастей в подходящем формате
-let prepareParts = (parts) => {
-  const result = {};
-
-  for (let part of parts) {
+let parseParts = (parts) => {
+  return parts.map((part) => {
     let { tradeMarkName: name, description, article: number, itemComment: comment } = part.partInfo;
-    let key = slugify(name, { lower: true });
+    let { price, deliveryInfo } = part.prices[0];
+    let shipping = deliveryInfo?.deliveryDateTimes[1].deliveryDate;
 
-    if (comment?.includes("угольный")) {
-      name += ", угольный";
-    }
-
-    if (result[key]) continue;
-
-    let price = part["prices"][0];
-
-    result[key] = {
-      name: price.deliveryInfo ? name + " (Доставка " + price.deliveryInfo.deliveryDateTimes[1].deliveryDate + ")" : name,
-      description,
+    return {
+      name,
+      description: [description, comment].join(" ").trim(),
       number,
-      price: price["price"] * 1.3,
+      price,
+      shipping,
       from: "shate-m",
     };
-  }
-
-  return result;
+  });
 };
 
 module.exports = searchInShateM;
