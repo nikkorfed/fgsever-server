@@ -33,11 +33,7 @@ let searchInShateM = async (number, config = {}) => {
     params: { partId: originalPartId },
     headers: { cookie: cookies },
   });
-  const externalOriginalPartsResponse = await axios.get("https://shate-m.ru/api/searchPart/GetOriginalsExternalPrices", {
-    params: { partId: originalPartId },
-    headers: { cookie: cookies },
-  });
-  const originalParts = config.originalParts ? [...internalOriginalPartsResponse.data, ...externalOriginalPartsResponse.data] : [];
+  const originalParts = config.originalParts ? internalOriginalPartsResponse.data : [];
 
   // Запрос аналогов c собственных складов shate-m
   const internalAnalogsResponse = await axios.get("https://shate-m.ru/api/searchPart/GetAnalogsInternalPrices", {
