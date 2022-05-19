@@ -92,9 +92,11 @@ let parseParts = (parts) => {
     let description = $("h4 span").attr("data-name");
     let number = $("h4 span").attr("data-code");
 
-    let firstRow = $(".search_result_table .tb-best .row:first-child");
-    let price = +firstRow.find("td:nth-child(6)").text().replace(/[\s₽]/g, "");
-    let shipping = prepareDate(firstRow.find("td:nth-child(2) .custom-tooltip-informer").text());
+    let bestAvailableRow = $(".search_result_table .tb-best .highlight-green").first();
+    let bestRow = $(".search_result_table .tb-best .row").first();
+    let priceRow = bestAvailableRow.length ? bestAvailableRow : bestRow;
+    let price = +priceRow.find("td:nth-child(6)").text().replace(/[\s₽]/g, "");
+    let shipping = prepareDate(priceRow.find("td:nth-child(2) .custom-tooltip-informer").text());
 
     return {
       name,
