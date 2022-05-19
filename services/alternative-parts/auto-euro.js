@@ -69,13 +69,19 @@ let searchInAutoEuro = async (number, config = {}) => {
   await browser.close();
 
   // Оригинальные запчасти
-  const originalParts = config.originalParts ? $(".proposals-1").toArray() : [];
+  const originalPartsTitle = /Предложения запрошенного товара/;
+  const originalPartsElements = $(".proposal_group_name").filter((_, el) => $(el).text().replace(/\s+/g, " ").match(originalPartsTitle));
+  const originalParts = config.originalParts ? originalPartsElements.siblings(".search_maker_block").toArray() : [];
 
   // Аналоги c собственных складов
-  const internalAnalogs = $(".proposals-2").toArray();
+  const internalAnalogsTitle = /Аналоги\/кроссы в наличии на складе/;
+  const internalAnalogsBlock = $(".proposal_group_name").filter((_, el) => $(el).text().replace(/\s+/g, " ").match(internalAnalogsTitle));
+  const internalAnalogs = internalAnalogsBlock.siblings(".search_maker_block").toArray();
 
   // Аналоги у сторонних поставщиков
-  const externalAnalogs = config.externalAnalogs ? $(".proposals-3").toArray() : [];
+  const externalAnalogsTitle = /Аналоги\/кроссы \(\d+\)/;
+  const externalAnalogsBlock = $(".proposal_group_name").filter((_, el) => $(el).text().replace(/\s+/g, " ").match(externalAnalogsTitle));
+  const externalAnalogs = config.externalAnalogs ? externalAnalogsBlock.siblings(".search_maker_block").toArray() : [];
 
   // Подготовка запчастей
   const parts = [...originalParts, ...internalAnalogs, ...externalAnalogs];
