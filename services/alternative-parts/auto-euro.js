@@ -78,7 +78,7 @@ let searchInAutoEuro = async (number, config = {}) => {
   const externalAnalogs = config.externalAnalogs ? $(".proposals-3").toArray() : [];
 
   // Подготовка запчастей
-  const parts = [...originalParts, ...internalAnalogs, externalAnalogs];
+  const parts = [...originalParts, ...internalAnalogs, ...externalAnalogs];
   const result = prepareResult(parseParts(parts), config);
 
   return result;
