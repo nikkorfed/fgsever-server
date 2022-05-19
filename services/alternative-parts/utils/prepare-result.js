@@ -6,7 +6,7 @@ let prepareResult = (parts, config) => {
 
   for (let part of parts) {
     let { name, description, number, price, shipping, from } = part;
-    let key = slugify(`${name} ${number}`, { lower: true });
+    let key = slugify(`${name} ${number.replace(/\s/g, "")}`, { lower: true });
 
     if (number === config.originalNumber) {
       key = "original";
