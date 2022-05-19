@@ -6,14 +6,18 @@ let prepareResult = (parts, config) => {
 
   for (let part of parts) {
     let { name, description, number, price, shipping, from } = part;
-    let key = number === config.originalNumber ? "original" : slugify(`${name} ${number}`, { lower: true });
+    let key = slugify(`${name} ${number}`, { lower: true });
 
-    if (result[key]) continue;
+    if (number === config.originalNumber) {
+      key = "original";
+      name = "Оригинал";
+    }
 
     if (description?.match(/угол|углем/i)) {
       name += ", угольный";
     }
 
+    if (result[key]) continue;
     result[key] = {
       name: shipping ? `${name} (Доставка ${shipping})` : name,
       description,
