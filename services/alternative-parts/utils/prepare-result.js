@@ -17,7 +17,8 @@ let prepareResult = (parts, config) => {
       name += ", угольный";
     }
 
-    if (result[key]) continue;
+    if (!price || result[key]) continue;
+
     result[key] = {
       name: shipping ? `${name} (Доставка ${shipping})` : name,
       description,
