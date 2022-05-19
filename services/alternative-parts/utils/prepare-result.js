@@ -1,4 +1,5 @@
 const slugify = require("slugify");
+const sortParts = require("./sort-parts");
 const filterParts = require("./filter-parts");
 
 let prepareResult = (parts, config) => {
@@ -28,7 +29,7 @@ let prepareResult = (parts, config) => {
     };
   }
 
-  return filterParts(result, config);
+  return sortParts(filterParts(result, config));
 };
 
 module.exports = prepareResult;

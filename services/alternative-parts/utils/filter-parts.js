@@ -1,3 +1,5 @@
+const partition = require("./partition");
+
 let filterParts = (parts, config) => {
   markFavorites(parts);
 
@@ -21,17 +23,6 @@ let markFavorites = (parts) => {
       parts[key].favorite = true;
     }
   }
-};
-
-let partition = (object, callback) => {
-  const truthy = {};
-  const falsy = {};
-
-  for (const key in object) {
-    callback(object[key]) ? (truthy[key] = object[key]) : (falsy[key] = object[key]);
-  }
-
-  return [truthy, falsy];
 };
 
 module.exports = filterParts;

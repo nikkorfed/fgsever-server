@@ -1,3 +1,5 @@
+const sortParts = require("./sort-parts");
+
 let mergeParts = (target, ...sources) => {
   const result = { ...target };
 
@@ -7,7 +9,7 @@ let mergeParts = (target, ...sources) => {
     }
   }
 
-  return result;
+  return sortParts(result);
 };
 
 module.exports = mergeParts;
