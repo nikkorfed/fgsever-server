@@ -29,11 +29,15 @@ let searchInShateM = async (number, config = {}) => {
   const originalPartId = originalPart.id;
 
   // Запрос оригинальных запчастей
-  const originalPartsResponse = await axios.get("ttps://shate-m.ru/api/searchPart/GetOriginalsInternalPrices", {
+  const internalOriginalPartsResponse = await axios.get("https://shate-m.ru/api/searchPart/GetOriginalsInternalPrices", {
     params: { partId: originalPartId },
     headers: { cookie: cookies },
   });
-  const originalParts = config.originalParts ? originalPartsResponse.data : [];
+  const externalOriginalPartsResponse = await axios.get("https://shate-m.ru/api/searchPart/GetOriginalsExternalPrices", {
+    params: { partId: originalPartId },
+    headers: { cookie: cookies },
+  });
+  const originalParts = config.originalParts ? [...internalOriginalPartsResponse.data, ...externalOriginalPartsResponse.data] : [];
 
   // Запрос аналогов c собственных складов shate-m
   const internalAnalogsResponse = await axios.get("https://shate-m.ru/api/searchPart/GetAnalogsInternalPrices", {
@@ -59,7 +63,7 @@ let searchInShateM = async (number, config = {}) => {
 let parseParts = (parts) => {
   return parts.map((part) => {
     let { tradeMarkName: name, description, article: number, itemComment: comment } = part.partInfo;
-    let { price, deliveryInfo } = part.prices[0];
+    let { price, deliveryInfo } = part.prices?.[0] ?? {};
     let shipping = deliveryInfo?.deliveryDateTimes[1].deliveryDate;
 
     return {
