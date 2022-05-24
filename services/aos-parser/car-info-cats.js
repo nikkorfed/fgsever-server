@@ -62,8 +62,11 @@ let getCarInfoFromCats = async (vin) => {
         })
         .catch(() => ({}));
 
+      const title = await page.$eval(".crumb", (e) => e.textContent);
+      const modelCode = title.match(/Модель (\w+)/)[1];
+
       result.vin = info["VIN"] ?? vin;
-      result.modelCode = info["Серия"]?.trim();
+      result.modelCode = info["Серия"]?.trim() ?? modelCode;
       result.productionDate = info["Изготовлено"] && moment(info["Изготовлено"]).format("DD.MM.YYYY");
 
       const options = await page.$$eval(".bmw-asap-carinfo-options-table .div-tr", (rows) => {
