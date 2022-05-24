@@ -11,7 +11,7 @@ const doc = new GoogleSpreadsheet("1_9Dv5BNEkAx3e2c7bP58AhkctjyH9sMSR_8h8AGTnTY"
 //   console.log("\nФайл успешно сохранён!");
 // })();
 
-let getOptions = async ({ modelCode, productionDate, currentOptions }) => {
+let getOptions = async ({ modelCode, productionDate, currentOptions = [] }) => {
   await doc.useServiceAccountAuth(require("./credentials.json"));
   await doc.loadInfo();
 
