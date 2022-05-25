@@ -20,11 +20,8 @@ let searchInAutoEuro = async (number, config = {}) => {
   config.originalNumber = number;
 
   // Запуск браузера
-  const browser = await puppeteer.launch({ headless, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
-  const pages = await browser.pages();
-  const page = pages[0];
-  await page.setViewport({ width: 1440, height: 900 });
-  await page.setExtraHTTPHeaders({ "Accept-Language": "ru-RU" });
+  const browser = await puppeteer.launch({ headless, defaultViewport: null, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
+  const [page] = await browser.pages();
 
   // Авторизация
   let tryLogin = false,
@@ -102,7 +99,7 @@ let parseParts = (parts) => {
     let bestRow = $(".search_result_table .tb-best .row").first();
     let priceRow = bestAvailableRow.length ? bestAvailableRow : bestRow;
     let price = +priceRow.find("td:nth-child(6)").text().replace(/[\s₽]/g, "");
-    let shipping = prepareDate(priceRow.find("td:nth-child(2) .custom-tooltip-informer").text());
+    let shipping = parseDate(priceRow.find("td:nth-child(2) .custom-tooltip-informer").text());
 
     return {
       name,
@@ -115,7 +112,7 @@ let parseParts = (parts) => {
   });
 };
 
-let prepareDate = (text) => {
+let parseDate = (text) => {
   if (!text) return text;
 
   text = text.replace(/[\s,]+/g, " ");
