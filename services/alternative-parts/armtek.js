@@ -21,16 +21,21 @@ let searchInArmtek = async (number, config = {}) => {
   const [page] = await browser.pages();
 
   // Авторизация
+  const cookies = JSON.parse(await fs.readFile(__dirname + "/cookies/armtek.json").catch(() => null));
   let tryLogin = false,
     loginTries = 0;
+
   do {
     loginTries++;
-    const cookies = JSON.parse(await fs.readFile(__dirname + "/cookies/armtek.json").catch(() => null));
     if (!cookies || tryLogin) {
       await page.goto("https://etp.armtek.ru/search");
       await page.waitForNetworkIdle();
+      await page.evaluate(() => (document.getElementById("login").value = ""));
       await page.type("input#login", login);
+      await page.evaluate(() => (document.getElementById("password").value = ""));
       await page.type("input#password", password);
+      await page.evaluate(() => (document.getElementById("remember").checked = false));
+      await page.click("form.sign-in-form .checkbox");
       await page.click("button#login-btn");
       await page.waitForNavigation();
       const cookies = await page.cookies();
@@ -38,7 +43,7 @@ let searchInArmtek = async (number, config = {}) => {
     } else {
       await page.setCookie(...cookies);
       await page.goto("https://etp.armtek.ru/search");
-      // await page.waitForNetworkIdle();
+      await page.waitForNetworkIdle();
     }
     const signInForm = await page.$("form.sign-in-form");
     tryLogin = signInForm;
