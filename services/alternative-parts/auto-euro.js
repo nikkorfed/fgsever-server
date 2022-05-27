@@ -31,6 +31,7 @@ let searchInAutoEuro = async (number, config = {}) => {
     const cookies = JSON.parse(await fs.readFile(__dirname + "/cookies/auto-euro.json").catch(() => null));
     if (!cookies || tryLogin) {
       await page.goto("https://shop.autoeuro.ru");
+      await page.waitForSelector("#authtitle");
       await page.type("input#username", username);
       await page.type("input#password", password);
       await page.click("div#login");
@@ -39,6 +40,7 @@ let searchInAutoEuro = async (number, config = {}) => {
       await fs.writeFile(__dirname + "/cookies/auto-euro.json", JSON.stringify(cookies, null, 2));
     } else await page.setCookie(...cookies);
     await page.goto("https://shop.autoeuro.ru/main/search");
+    await page.waitForSelector("#authtitle");
     const authTitle = await page.$eval("#authtitle", (element) => element.textContent);
     tryLogin = authTitle.includes("ВЫ НЕ АВТОРИЗОВАНЫ");
     if (loginTries == 3) break;
@@ -47,7 +49,7 @@ let searchInAutoEuro = async (number, config = {}) => {
   // Запрос информации об оригинальной запчасти
   await page.type("input#search_text_input2", number);
   await page.click("span#search_one_button");
-  await page.waitForNavigation();
+  await page.waitForSelector("#variants");
 
   // Переход на страницу запчасти для BMW
   const title = await page.$eval("h1", (element) => element.textContent);
