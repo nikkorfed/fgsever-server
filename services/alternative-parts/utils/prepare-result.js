@@ -1,8 +1,8 @@
 const slugify = require("slugify");
-const { compareTwoStrings: similarity } = require("string-similarity");
 
 const sortParts = require("./sort-parts");
 const filterParts = require("./filter-parts");
+const findSimilarPart = require("./similar-part");
 
 let prepareResult = (parts, config) => {
   const result = {};
@@ -23,13 +23,10 @@ let prepareResult = (parts, config) => {
     name = shipping ? `${name} (Доставка ${shipping})` : name;
     price = price * 1.3;
 
-    let isSimilarPart = ([_, part]) => part.brand === brand && similarity(part.type, type) > 0.5;
-    let [similarKey, similarPart] = Object.entries(result).find(isSimilarPart) ?? [];
-    let isSimilarCheaper = similarPart?.price <= price;
+    let [_, similarPart] = findSimilarPart(result, { brand, type, number });
+    if (!price || similarPart) continue;
 
-    if (!price || isSimilarCheaper) continue;
-
-    result[similarKey ?? key] = { brand, name, description, type, number, price, from };
+    result[key] = { brand, name, description, type, number, price, from };
   }
 
   return sortParts(filterParts(result, config));
