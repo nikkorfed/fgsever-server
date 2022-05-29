@@ -60,7 +60,8 @@ let searchInArmtek = async (number, config = {}) => {
   // Переход на страницу запчасти для BMW
   const originalPart = await page.evaluateHandle((number) => {
     const parts = Array.from(document.querySelectorAll(".search-history-list .second_search"));
-    return parts.find((element) => element.getAttribute("pin") === number);
+    let isOriginal = (el) => el.getAttribute("pin").replace(/\s/g, "") === number && el.querySelector(".brand-text").textContent === "BMW";
+    return parts.find(isOriginal);
   }, number);
   await originalPart.click();
   await page.waitForSelector("#component-search-table-SRCDATA_wrapper");
