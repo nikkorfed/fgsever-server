@@ -4,16 +4,16 @@ const searchInArmtek = require("./armtek");
 
 const { mergeParts } = require("./utils");
 
-let search = async (number, config = {}) => {
-  // Аналоги из различных источников
-  const [shateMAnalogs, autoEuroAnalogs] = await Promise.all([
+let search = async (number, config) => {
+  // Запчасти из различных источников
+  const [shateMParts, autoEuroParts, armtekParts] = await Promise.all([
     searchInShateM(number, config),
     searchInAutoEuro(number, config),
     searchInArmtek(number, config),
   ]);
 
-  // Подготовка запчастей
-  const result = mergeParts(shateMAnalogs, autoEuroAnalogs);
+  // Объединение запчастей
+  const result = mergeParts(shateMParts, autoEuroParts, armtekParts);
   return result;
 };
 

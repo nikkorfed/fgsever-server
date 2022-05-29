@@ -11,10 +11,12 @@ const login = "RIVERDALE@inbox.ru";
 const password = "bmwsever72";
 
 let searchInArmtek = async (number, config = {}) => {
-  config.originalParts = config.originalParts ?? true;
-  config.externalAnalogs = config.externalAnalogs ?? false;
-  config.onlyFavorites = config.onlyFavorites ?? false;
-  config.originalNumber = number;
+  config = {
+    originalParts: config.originalParts ?? true,
+    externalAnalogs: config.externalAnalogs ?? false,
+    onlyFavorites: config.onlyFavorites ?? false,
+    originalNumber: number,
+  };
 
   // Запуск браузера
   const browser = await puppeteer.launch({ headless, defaultViewport: null, args: ["--no-sandbox", "--disable-setuid-sandbox"] });

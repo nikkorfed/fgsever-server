@@ -5,10 +5,12 @@ const axios = require("axios").default;
 const { cookie, prepareResult } = require("./utils");
 
 let searchInShateM = async (number, config = {}) => {
-  config.originalParts = config.originalParts ?? true;
-  config.externalAnalogs = config.externalAnalogs ?? true;
-  config.onlyFavorites = config.onlyFavorites ?? false;
-  config.originalNumber = number;
+  config = {
+    originalParts: config.originalParts ?? true,
+    externalAnalogs: config.externalAnalogs ?? true,
+    onlyFavorites: config.onlyFavorites ?? false,
+    originalNumber: number,
+  };
 
   // Авторизация
   const authData = { login: "MIKANIA", password: "4996383577", rememberMe: true };
