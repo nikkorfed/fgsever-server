@@ -39,7 +39,14 @@ let searchInArmtek = async (number, config = {}) => {
       await page.evaluate(() => (document.getElementById("remember").checked = false));
       await page.click("form.sign-in-form .checkbox");
       await page.click("button#login-btn");
-      await page.waitForNavigation();
+      await page.waitForNetworkIdle();
+
+      const captcha = await page.$("#container-captcha");
+      if (captcha) {
+        await browser.close();
+        return {};
+      }
+
       const cookies = await page.cookies();
       await fs.writeFile(__dirname + "/cookies/armtek.json", JSON.stringify(cookies, null, 2));
     } else {
