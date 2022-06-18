@@ -2,9 +2,9 @@ const _ = require("lodash");
 const fs = require("fs/promises");
 const axios = require("axios").default;
 
-const { cookie, prepareResult } = require("./utils");
+const { cookie, prepareResult, catchError } = require("./utils");
 
-let searchInShateM = async (number, config = {}) => {
+let searchInShateM = catchError(async (number, config = {}) => {
   config = {
     originalParts: config.originalParts ?? true,
     externalAnalogs: config.externalAnalogs ?? true,
@@ -56,7 +56,7 @@ let searchInShateM = async (number, config = {}) => {
   const result = prepareResult(parseParts(parts), config);
 
   return result;
-};
+});
 
 let parseParts = (parts) => {
   return parts.map((part) => {
