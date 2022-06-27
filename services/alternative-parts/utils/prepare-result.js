@@ -20,12 +20,13 @@ let prepareResult = (parts, config) => {
     }
 
     if (description?.match(/угол|углем/i)) name += ", угольный";
+    name = shipping ? `${name} (Доставка ${shipping})` : name;
     price = price * 1.3;
 
     let [_, similarPart] = findSimilarPart(result, { brand, type, number });
     if (!price || similarPart) continue;
 
-    result[key] = { brand, name, description, type, number, price, shipping, from };
+    result[key] = { brand, name, description, type, number, price, from };
   }
 
   return sortParts(filterParts(result, config));
