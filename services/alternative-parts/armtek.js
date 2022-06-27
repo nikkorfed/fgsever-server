@@ -30,8 +30,10 @@ let searchInArmtek = async (number, config = {}) => {
   do {
     loginTries++;
     if (!cookies || tryLogin) {
-      await page.goto("https://etp.armtek.ru/search");
-      await page.waitForNetworkIdle();
+      if (page.url() !== "https://etp.armtek.ru/?redirect_url=/search") {
+        await page.goto("https://etp.armtek.ru/search");
+        await page.waitForNetworkIdle();
+      }
       await page.evaluate(() => (document.getElementById("login").value = ""));
       await page.type("input#login", login);
       await page.evaluate(() => (document.getElementById("password").value = ""));
@@ -43,6 +45,9 @@ let searchInArmtek = async (number, config = {}) => {
 
       const captcha = await page.$("#container-captcha");
       if (captcha) {
+        // await page.waitForTimeout(15 * 1000);
+        // await page.click("button#login-btn");
+        // await page.waitForNetworkIdle();
         await browser.close();
         return {};
       }
@@ -55,7 +60,7 @@ let searchInArmtek = async (number, config = {}) => {
       await page.waitForNetworkIdle();
     }
     const signInForm = await page.$("form.sign-in-form");
-    tryLogin = signInForm;
+    tryLogin = !!signInForm;
     if (loginTries == 3) break;
   } while (tryLogin);
 
