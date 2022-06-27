@@ -1,7 +1,7 @@
 let catchError = (func) => {
   return async (...args) => {
     try {
-      await func(...args);
+      return await func(...args);
     } catch (error) {
       console.log(error);
       return {};
