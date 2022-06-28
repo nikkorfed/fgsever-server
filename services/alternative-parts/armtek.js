@@ -32,7 +32,7 @@ let searchInArmtek = async (number, config = {}) => {
     if (!cookies || tryLogin) {
       if (page.url() !== "https://etp.armtek.ru/?redirect_url=/search") {
         await page.goto("https://etp.armtek.ru/search");
-        await page.waitForNetworkIdle();
+        await page.waitForNetworkIdle({ timeout: 10000 });
       }
       await page.evaluate(() => (document.getElementById("login").value = ""));
       await page.type("input#login", login);
@@ -41,13 +41,13 @@ let searchInArmtek = async (number, config = {}) => {
       await page.evaluate(() => (document.getElementById("remember").checked = false));
       await page.click("form.sign-in-form .checkbox");
       await page.click("button#login-btn");
-      await page.waitForNetworkIdle();
+      await page.waitForNetworkIdle({ timeout: 11000 });
 
       const captcha = await page.$("#container-captcha");
       if (captcha) {
         // await page.waitForTimeout(15 * 1000);
         // await page.click("button#login-btn");
-        // await page.waitForNetworkIdle();
+        // await page.waitForNetworkIdle({ timeout: 12000 });
         await browser.close();
         return {};
       }
@@ -57,7 +57,7 @@ let searchInArmtek = async (number, config = {}) => {
     } else {
       await page.setCookie(...cookies);
       await page.goto("https://etp.armtek.ru/search");
-      await page.waitForNetworkIdle();
+      await page.waitForNetworkIdle({ timeout: 13000 });
     }
     const signInForm = await page.$("form.sign-in-form");
     tryLogin = !!signInForm;
@@ -67,7 +67,7 @@ let searchInArmtek = async (number, config = {}) => {
   // Запрос информации об оригинальной запчасти
   await page.type("input#query-search", number);
   // await page.click("button#search-btn");
-  await page.waitForSelector(".search-history-list .second_search");
+  await page.waitForSelector(".search-history-list .second_search", { timeout: 14000 });
 
   // Переход на страницу запчасти для BMW
   const originalPart = await page.evaluateHandle((number) => {
@@ -76,7 +76,7 @@ let searchInArmtek = async (number, config = {}) => {
     return parts.find(isOriginal);
   }, number);
   await originalPart.click();
-  await page.waitForSelector("#component-search-table-SRCDATA_wrapper");
+  await page.waitForSelector("#component-search-table-SRCDATA_wrapper", { timeout: 15000 });
 
   const content = await page.content();
   const $ = cheerio.load(content);
