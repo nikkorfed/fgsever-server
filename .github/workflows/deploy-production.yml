@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: appleboy/ssh-action@master
         with:
-          host: 80.78.254.156
+          host: 194.58.98.247
           username: root
           key: ${{ secrets.SSH_KEY }}
           script: |
