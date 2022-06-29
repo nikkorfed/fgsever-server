@@ -9,6 +9,7 @@ let prepareResult = (parts, config) => {
 
   for (let part of parts) {
     let { name, description, number, price, shipping, from } = part;
+    if (!number || !price) continue;
 
     let brand = name;
     let type = description?.split(" ")[0].toLowerCase();
@@ -24,7 +25,7 @@ let prepareResult = (parts, config) => {
     price = price * 1.3;
 
     let [_, similarPart] = findSimilarPart(result, { brand, type, number });
-    if (!price || similarPart) continue;
+    if (similarPart) continue;
 
     result[key] = { brand, name, description, type, number, price, from };
   }
