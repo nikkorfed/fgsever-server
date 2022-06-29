@@ -84,41 +84,34 @@ let getOptions = async ({ modelCode, productionDate, currentOptions = [] }) => {
     let targets = row["Опция"].replace(/\s/g, "").split(",");
     targets = targets.map((target) => options.toName(target));
 
-    // console.log("\nПроверяем условие для опций", targets);
-
     let condition = row["Необходимые опции"].replace(/\s/g, "").split(",");
     if (!condition) condition = [];
 
     let neededOptions = condition.filter((option) => !option.includes("*"));
     let optionalOptions = condition.filter((option) => option.includes("*")).map((option) => options.toName(option.replace(/\*/g, "")));
 
-    // console.log("Требуемые опции", neededOptions);
-    // console.log("Опциональные опции", optionalOptions);
-
-    let fulfilled = neededOptions.every((option) => {
+    let neededOptionsFulfilled = neededOptions.every((option) => {
       if (option.includes("/")) return option.split("/").some((option) => currentOptions.hasOption(options.toCode(option)));
       else if (option.includes("!")) return !currentOptions.hasOption(options.toCode(option.slice(1)));
       else return currentOptions.hasOption(options.toCode(option));
     });
 
-    // console.log("Условие по требуемым опциям выполнено?", fulfilled);
-
-    // if (row["Код кузова"] && !row["Код кузова"].includes(modelCode)) fulfilled = false;
+    let modelCodeFulfilled = true;
     if (row["Код кузова"]) {
       let codes = row["Код кузова"].replace(/\s/g, "").split("/");
-      if (codes.every((item) => modelCode != item)) fulfilled = false;
+      modelCodeFulfilled = codes.includes(modelCode);
     }
 
+    let productionDateFulfilled = true;
     if (row["Дата выпуска"]) {
       let dateCondition = row["Дата выпуска"].replace(/\s/g, "").split(",");
-      fulfilled = dateCondition.every((date) => {
+      productionDateFulfilled = dateCondition.every((date) => {
         if (date.includes(">") && +moment(productionDate, "DD-MM-YYYY") > +moment(date, ["MM-YYYY", "DD-MM-YYYY"])) return true;
         if (date.includes("<") && +moment(productionDate, "DD-MM-YYYY") < +moment(date, ["MM-YYYY", "DD-MM-YYYY"])) return true;
       });
     }
 
-    // console.log("Полное условие выполнено?", fulfilled);
-    if (!fulfilled) continue;
+    if (!neededOptionsFulfilled || !modelCodeFulfilled || !productionDateFulfilled) continue;
 
     for (let target of targets) {
       if (!optionalOptions.length) {
