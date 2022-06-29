@@ -4,3 +4,4 @@ exports.mergeParts = require("./merge-parts");
 exports.filterParts = require("./filter-parts");
 exports.prepareResult = require("./prepare-result");
 exports.catchError = require("./catch-error");
+exports.timeout = require("./timeout");
