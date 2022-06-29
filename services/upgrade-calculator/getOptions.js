@@ -222,7 +222,7 @@ function addDependencies(target, dependencies, data) {
     if (!this[target][dependencies]) this[target][dependencies] = [];
     if (option.includes("/")) this[target][dependencies].push(option.split("/").map((option) => this.toName(option)));
     else if (option.includes("x") || option.includes("х")) delete this[target][dependencies];
-    else this[target][dependencies].push(this.toName(option));
+    else if (!this[target][dependencies].includes(this.toName(option))) this[target][dependencies].push(this.toName(option));
   }
 }
 
