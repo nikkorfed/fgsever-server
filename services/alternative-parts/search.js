@@ -9,11 +9,15 @@ let search = async (number, config) => {
   const [shateMParts, autoEuroParts, armtekParts] = await Promise.all([
     searchInShateM(number, config),
     searchInAutoEuro(number, config),
-    searchInArmtek(number, config),
+    // searchInArmtek(number, config),
   ]);
 
   // Объединение запчастей
-  const result = mergeParts(shateMParts, autoEuroParts, armtekParts);
+  const result = mergeParts(
+    shateMParts,
+    autoEuroParts,
+    // armtekParts
+  );
   return result;
 };
 
