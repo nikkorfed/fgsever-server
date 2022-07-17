@@ -8,8 +8,9 @@ let prepareResult = (parts, config) => {
   const result = {};
 
   for (let part of parts) {
-    let { name, description, number, price, shipping, from } = part;
+    let { name, description, number, price, shipping, available, from } = part;
     if (!number || !price) continue;
+    if (config.skipNotAvailable && !available) continue;
 
     let brand = name;
     let type = description?.split(" ")[0].toLowerCase();

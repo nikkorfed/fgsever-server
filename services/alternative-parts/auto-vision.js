@@ -16,7 +16,7 @@ const login = "bmw2";
 const password = "lenovo";
 
 let searchInAutoVision = catchError(async (number, config = {}) => {
-  config = { originalNumber: number };
+  config = { originalNumber: number, skipNotAvailable: true };
 
   // Запуск браузера
   const browser = await puppeteer.launch({ headless, defaultViewport: null, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
@@ -75,12 +75,12 @@ let searchInAutoVision = catchError(async (number, config = {}) => {
         .text()
         .match(/\d+(?:\.\d+)?/) * euroRate,
     shipping: moment().add($("tr.group1 .col_term").text().replace(/\s/g, "").split("/")[0], "day").format("DD.MM"),
+    available: $("tr.group1 .col_remains img[title=present]").length > 0,
     from: "auto-vision",
   };
 
   // Подготовка запчастей
   const result = prepareResult([part], config);
-  console.log({ result });
   return result;
 });
 
