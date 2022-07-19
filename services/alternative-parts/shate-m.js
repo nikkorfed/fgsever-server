@@ -10,6 +10,7 @@ let searchInShateM = catchError(async (number, config = {}) => {
     externalAnalogs: config.externalAnalogs ?? true,
     onlyFavorites: config.onlyFavorites ?? false,
     originalNumber: number,
+    skipNotAvailable: true,
   };
 
   // Авторизация
@@ -61,8 +62,9 @@ let searchInShateM = catchError(async (number, config = {}) => {
 let parseParts = (parts) => {
   return parts.map((part) => {
     let { tradeMarkName: name, description, article: number, itemComment: comment } = part.partInfo;
-    let { price, deliveryInfo } = part.prices?.[0] ?? {};
+    let { deliveryInfo, price, availability } = part.prices?.[0] ?? {};
     let shipping = deliveryInfo?.deliveryDateTimes[1].deliveryDate;
+    let available = +availability.replace(/\D/g, "") > 0;
 
     return {
       name,
@@ -70,6 +72,7 @@ let parseParts = (parts) => {
       number,
       price,
       shipping,
+      available,
       from: "shate-m",
     };
   });
