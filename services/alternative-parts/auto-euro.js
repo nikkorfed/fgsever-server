@@ -19,6 +19,7 @@ let searchInAutoEuro = async (number, config = {}) => {
     externalAnalogs: config.externalAnalogs ?? true,
     onlyFavorites: config.onlyFavorites ?? false,
     originalNumber: number,
+    skipNotAvailable: true,
   };
 
   // Запуск браузера
@@ -104,6 +105,7 @@ let parseParts = (parts) => {
     let priceRow = bestAvailableRow.length ? bestAvailableRow : bestRow;
     let price = +priceRow.find("td:nth-child(6)").text().replace(/[\s₽]/g, "");
     let shipping = parseDate(priceRow.find("td:nth-child(2) .custom-tooltip-informer").text());
+    let available = +priceRow.find("td:nth-child(4)").text().replace(/\D/g, "") > 0;
 
     return {
       name,
@@ -111,6 +113,7 @@ let parseParts = (parts) => {
       number,
       price,
       shipping,
+      available,
       from: "auto-euro",
     };
   });
