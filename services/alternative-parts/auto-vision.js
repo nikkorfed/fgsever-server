@@ -74,7 +74,8 @@ let searchInAutoVision = catchError(async (number, config = {}) => {
       $("tr.group1 .col_final_price")
         .text()
         .match(/\d+(?:\.\d+)?/) * euroRate,
-    shipping: moment().add($("tr.group1 .col_term").text().replace(/\s/g, "").split("/")[0], "day").format("DD.MM"),
+    // shipping: moment().add($("tr.group1 .col_term").text().replace(/\s/g, "").split("/")[0], "day").format("DD.MM"),
+    shipping: moment().add(2, "month").format("DD.MM"),
     available: $("tr.group1 .col_remains img[title=present]").length > 0,
     from: "auto-vision",
   };
