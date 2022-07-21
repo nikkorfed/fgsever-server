@@ -4,7 +4,7 @@ let findSimilarPart = (result, { brand, type, number }) => {
   let isSimilarPart = ([_, part]) => {
     if (part.number.replace(/[\s-]/g, "") === number.replace(/[\s-]/g, "")) return true;
     if (part.brand !== brand) return false;
-    if (synonyms(part.type, type) || similarity(part.type, type) > 0.5) return true;
+    if (part.type && type && (synonyms(part.type, type) || similarity(part.type, type) > 0.5)) return true;
     return false;
   };
 
