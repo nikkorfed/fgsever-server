@@ -7,20 +7,15 @@ const { mergeParts } = require("./utils");
 
 let search = async (number, config) => {
   // Запчасти из различных источников
-  const [shateMParts, autoEuroParts, autoVisionParts] = await Promise.all([
+  const [shateMParts, autoEuroParts, armtekParts, autoVisionParts] = await Promise.all([
     searchInShateM(number, config),
     searchInAutoEuro(number, config),
-    // searchInArmtek(number, config),
+    searchInArmtek(number, config),
     searchInAutoVision(number, config),
   ]);
 
   // Объединение запчастей
-  const result = mergeParts(
-    shateMParts,
-    autoEuroParts,
-    // armtekParts,
-    autoVisionParts
-  );
+  const result = mergeParts(shateMParts, autoEuroParts, armtekParts, autoVisionParts);
   return result;
 };
 
