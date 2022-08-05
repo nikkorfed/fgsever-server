@@ -63,7 +63,7 @@ let searchInAutoVision = catchError(async (number, config = {}) => {
   const response = await axios.get("http://www.cbr.ru/scripts/XML_daily.asp");
   const parser = new XMLParser();
   const currencies = parser.parse(response.data);
-  const euroRate = +currencies.ValCurs.Valute.find((Valute) => Valute.CharCode === "EUR").Value.replace(",", ".");
+  const euroRate = +currencies.ValCurs.Valute.find((Valute) => Valute.CharCode === "EUR").Value.replace(",", ".") + 10;
 
   // Оригинальная запчасть
   const part = {
