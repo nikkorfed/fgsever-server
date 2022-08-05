@@ -22,7 +22,7 @@ let prepareResult = (parts, config) => {
     }
 
     if (description?.match(/угол|углем/i)) name += ", угольный";
-    name = shipping ? `${name} (Доставка ${shipping})` : name;
+    name = shipping ? `${name} (Доставка ${from === "auto-vision" ? "из Германии " : ""}${shipping})` : name;
     price = price * 1.3;
 
     let [_, similarPart] = findSimilarPart(result, { brand, type, number });
