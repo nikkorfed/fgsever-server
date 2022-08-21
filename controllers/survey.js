@@ -5,7 +5,10 @@ exports.index = async (req, res) => {
 };
 
 exports.saveAnswer = async (req, res) => {
+  const name = req.query.name;
   const data = req.body;
-  await saveAnswer(data);
+
+  await saveAnswer(name, data);
+
   return res.json({ result: "Анкета успешно сохранена", data });
 };
