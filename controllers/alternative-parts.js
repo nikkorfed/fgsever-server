@@ -11,7 +11,7 @@ exports.search = async (req, res) => {
   else if (from === "shatem") parts = await searchInShateM(number, config);
   else if (from === "autoeuro") parts = await searchInAutoEuro(number, config);
   else if (from === "armtek") parts = await searchInArmtek(number, config);
-  else if (from === "autovision") parts = await searchInAutoVision(number, config);
+  // else if (from === "autovision") parts = await searchInAutoVision(number, config);
 
   if (!parts || !Object.keys(parts).length) return res.send({ error: "no-alternatives" });
   return res.send(parts);
