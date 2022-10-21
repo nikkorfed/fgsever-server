@@ -12,7 +12,7 @@ const password = "bmwsever72";
 
 let searchInArmtek = catchError(async (number, config = {}) => {
   config = {
-    originalParts: config.originalParts ?? true,
+    originalParts: config.originalParts ?? false,
     externalAnalogs: config.externalAnalogs ?? false,
     onlyFavorites: config.onlyFavorites ?? false,
     originalNumber: number,

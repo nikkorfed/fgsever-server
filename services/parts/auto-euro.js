@@ -15,7 +15,7 @@ const password = "riverdale";
 
 let searchInAutoEuro = catchError(async (number, config = {}) => {
   config = {
-    originalParts: config.originalParts ?? true,
+    originalParts: config.originalParts ?? false,
     externalAnalogs: config.externalAnalogs ?? true,
     onlyFavorites: config.onlyFavorites ?? false,
     originalNumber: number,

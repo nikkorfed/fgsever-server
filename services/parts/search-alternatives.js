@@ -5,7 +5,7 @@ const searchInAutoVision = require("./auto-vision");
 
 const { mergeParts } = require("./utils");
 
-let search = async (number, config) => {
+let searchAlternatives = async (number, config) => {
   // Запчасти из различных источников
   const [shateMParts, autoEuroParts, armtekParts] = await Promise.all([
     searchInShateM(number, config),
@@ -19,4 +19,4 @@ let search = async (number, config) => {
   return result;
 };
 
-module.exports = search;
+module.exports = searchAlternatives;

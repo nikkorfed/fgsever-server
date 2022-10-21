@@ -10,12 +10,8 @@ const headless = process.env.HEADLESS === "true";
 const username = "Дерюгин ПС";
 const password = "3306";
 
-let searchInRolf = catchError(async (number, config = {}) => {
-  config = {
-    originalNumber: number,
-    numbersAsKeys: true,
-    skipNotAvailable: true,
-  };
+let searchInRolf = catchError(async (numbers, config = {}) => {
+  config = { numbersAsKeys: true };
 
   // Запуск браузера
   const browser = await puppeteer.launch({ headless, defaultViewport: null, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
@@ -42,7 +38,7 @@ let searchInRolf = catchError(async (number, config = {}) => {
     } while (tryLogin);
 
     // Запрос запчастей
-    await page.type("textarea[name=articles]", number);
+    await page.type("textarea[name=articles]", numbers);
     await page.click(".search-list input[name=search]");
     await page.waitForNetworkIdle();
     await page.$("table#multisearch");
@@ -74,7 +70,7 @@ let parseParts = (parts) => {
     let number = $("td:nth-child(2)").text();
 
     let price = $("td:nth-child(7)").text();
-    let shipping = $("td:nth-child(9)").text();
+    // let shipping = $("td:nth-child(9)").text();
     let available = $("td:nth-child(8)").text().replace(/\D/g, "") > 0;
 
     return {
@@ -82,7 +78,7 @@ let parseParts = (parts) => {
       description,
       number,
       price,
-      shipping,
+      // shipping,
       available,
       from: "rolf",
     };
