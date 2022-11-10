@@ -5,8 +5,10 @@
   "main": "app.js",
   "scripts": {
     "start": "node",
+    "start:migrate": "npm run migrate & npm run start",
     "dev": "nodemon",
-    "forever": "forever start app.js"
+    "dev:migrate": "npm run migrate & npm run dev",
+    "migrate": "sequelize-cli db:migrate"
   },
   "keywords": [],
   "author": "",
