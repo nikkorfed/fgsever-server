@@ -18,4 +18,5 @@ jobs:
             git restore . && git pull
             rm .env && cp -f .env.production .env && rm .env.*
             npm i
+            npm run migrate
             pm2 restart fgsever-server
