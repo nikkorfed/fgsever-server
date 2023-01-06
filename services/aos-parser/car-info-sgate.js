@@ -23,6 +23,9 @@ let getCarInfoFromSgate = async (vin) => {
     tryLoginAIR = false,
     loginAIRTries = 0;
 
+  console.log(`[${vin}] Поиск в AOS временно отключен!`);
+  return { error: "car-info-not-found" };
+
   // Запуск браузера
 
   const browser = await puppeteer.launch({
