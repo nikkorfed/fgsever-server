@@ -7,6 +7,8 @@ const findSimilarPart = require("./similar-part");
 let prepareResult = (parts, config) => {
   const result = {};
 
+  if (config.keepNumbers) config.keepNumbers.map((number) => (result[number] = { number }));
+
   for (let part of parts) {
     let { name, description, number, price, shipping, available, from } = part;
     if (!number || !price) continue;
@@ -28,7 +30,7 @@ let prepareResult = (parts, config) => {
     let [_, similarPart] = findSimilarPart(result, { brand, type, number });
     if (similarPart) continue;
 
-    result[key] = { brand, name, description, type, number, price, from };
+    result[key] = { ...result[key], brand, name, description, type, number, price, from };
   }
 
   return sortParts(filterParts(result, config));

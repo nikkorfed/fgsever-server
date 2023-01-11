@@ -11,7 +11,8 @@ const username = "Дерюгин ПС";
 const password = "3306";
 
 let searchInRolf = catchError(async (numbers, config = {}) => {
-  config = { numbersAsKeys: true };
+  config.numbersAsKeys ??= true;
+  config.keepNumbers ??= numbers.split(",");
 
   // Запуск браузера
   const browser = await puppeteer.launch({ headless, defaultViewport: null, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
