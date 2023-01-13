@@ -67,6 +67,8 @@ let searchInAutoEuro = catchError(async (number, config = {}) => {
       await page.waitForSelector("#variants");
     }
 
+    await page.waitForTimeout(1000);
+
     const content = await page.content();
     const $ = cheerio.load(content);
 
