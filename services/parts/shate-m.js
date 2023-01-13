@@ -20,34 +20,38 @@ let searchInShateM = catchError(async (number, config = {}) => {
   const cookies = cookie.parseSetCookie(authResponse.headers["set-cookie"]);
   await fs.writeFile(__dirname + "/cookies/shate-m.txt", cookies);
 
+  // Получение кода для запросов запчастей
+  const agreementCodeResponse = await axios.get("https://shate-m.ru/api/finance/getCustomerBalances", { headers: { cookie: cookies } });
+  const agreement = agreementCodeResponse.data.agreementsForBalance[0].code;
+
   // Запрос информации о запчастях по производителям
-  const brandPartsResponse = await axios.get("https://shate-m.ru/api/SearchPart/PartsByNumber", {
-    params: { number },
+  const brandPartsResponse = await axios.get("https://shate-m.ru/api/searchPart/liveSearch", {
+    params: { query: number },
     headers: { cookie: cookies },
   });
   const brandParts = brandPartsResponse.data;
 
   // Узнаём ID запчасти для BMW
-  const originalPart = brandParts.find((item) => item.tradeMarkName === "BMW");
-  const originalPartId = originalPart.id;
+  const originalPart = brandParts.find((item) => item.tradeMark === "BMW");
+  const originalPartId = originalPart.partId;
 
   // Запрос оригинальных запчастей
   const internalOriginalPartsResponse = await axios.get("https://shate-m.ru/api/searchPart/GetOriginalsInternalPrices", {
-    params: { partId: originalPartId },
+    params: { agreement, partId: originalPartId },
     headers: { cookie: cookies },
   });
   const originalParts = config.originalParts ? internalOriginalPartsResponse.data : [];
 
   // Запрос аналогов c собственных складов shate-m
   const internalAnalogsResponse = await axios.get("https://shate-m.ru/api/searchPart/GetAnalogsInternalPrices", {
-    params: { partId: originalPartId },
+    params: { agreement, partId: originalPartId },
     headers: { cookie: cookies },
   });
   const internalAnalogs = internalAnalogsResponse.data;
 
   // Запрос аналогов у сторонних поставщиков
   const externalAnalogsResponse = await axios.get("https://shate-m.ru/api/searchPart/GetAnalogsExternalPrices", {
-    params: { partId: originalPartId },
+    params: { agreement, partId: originalPartId },
     headers: { cookie: cookies },
   });
   const externalAnalogs = config.externalAnalogs ? externalAnalogsResponse.data : [];
