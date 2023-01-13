@@ -87,7 +87,9 @@ let searchInAutoEuro = catchError(async (number, config = {}) => {
 
     // Подготовка запчастей
     const parts = [...originalParts, ...internalAnalogs, ...externalAnalogs];
-    const result = prepareResult(parseParts(parts), config);
+    const parsedParts = parseParts(parts);
+    console.log("AUTOEURO PARSED", parsedParts);
+    const result = prepareResult(parsedParts, config);
     console.log("AUTOEURO RESULT", result);
     return result;
   } catch (error) {
