@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const moment = require("moment");
 const fs = require("fs").promises;
+const telegram = require("~/utils/telegram");
 
 const headless = process.env.HEADLESS === "true";
 
@@ -20,11 +21,18 @@ let getCarInfoFromSgate = async (vin) => {
   console.log(`[${vin}] Поиск данных автомобиля...`);
   let result = {},
     isLoginPage = false,
+    authMessage,
     tryLoginAIR = false,
     loginAIRTries = 0;
 
-  console.log(`[${vin}] Поиск в AOS временно отключен!`);
-  return { error: "car-info-not-found" };
+  const config = await fs
+    .readFile(__dirname + "/data/config.json")
+    .then(JSON.parse)
+    .catch(() => null);
+  if (config?.aosStopped) {
+    console.log(`[${vin}] Поиск в AOS временно отключен!`);
+    return { error: "car-info-not-found" };
+  }
 
   // Запуск браузера
 
@@ -55,6 +63,7 @@ let getCarInfoFromSgate = async (vin) => {
         await page.click(`input[value="Войти в систему"]`);
         await page.waitForNetworkIdle();
         isLoginPage = await page.$eval("title", (title) => title.textContent == "WEB-EAM Next");
+        authMessage = await page.$eval("#callback_0", (element) => element.textContent).catch(() => null);
         let cookies = JSON.stringify(await page.cookies(), null, 2);
         await fs.writeFile(__dirname + "/cookies/air.cookies", cookies);
         console.log(`[${vin}] Авторизация выполнена`);
@@ -153,7 +162,13 @@ let getCarInfoFromSgate = async (vin) => {
       tryLoginAIR = true;
     }
 
-    if (loginAIRTries == 3) break;
+    if (loginAIRTries == 3) {
+      if (authMessage) {
+        await fs.writeFile(__dirname + "/data/config.json", JSON.stringify({ aosStopped: true }, null, 2));
+        await telegram.notify(`*Ошибка при входе в AOS*:\n\n${authMessage}\n\nПоиск в AOS для робота временно отключен.`);
+      }
+      break;
+    }
   } while (tryLoginAIR);
 
   // Завершение работы браузера и возврат найденных данных

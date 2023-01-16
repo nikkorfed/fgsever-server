@@ -14,6 +14,7 @@ router.get("/", aosParser.getCarInfo);
 router.get("/images", aosParser.getCarImages);
 
 // Создание папок
+fs.mkdir("services/aos-parser/data", { recursive: true });
 fs.mkdir("services/aos-parser/cache", { recursive: true });
 fs.mkdir("services/aos-parser/cookies", { recursive: true });
 
