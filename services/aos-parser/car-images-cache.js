@@ -3,16 +3,13 @@ const fs = require("fs").promises;
 let getCarImagesFromCache = async (vin, hostname) => {
   if (!(vin.length == 7 || vin.length == 17)) return { error: "wrong-vin" };
 
-  const port = +process.env.PORT;
-  if (port !== 80) hostname += `:${port}`;
-
   let exists = await fs
     .access(__dirname + `/images/${vin}/`)
     .then((result) => true)
     .catch((error) => false);
 
   if (!exists) {
-    console.log(`[${vin}] Изображения автомобиля найти не удалось!`);
+    console.log(`[${vin}] Изображения автомобиля в кэше найти не удалось!`);
     return { error: "images-not-found" };
   }
 
@@ -23,7 +20,7 @@ let getCarImagesFromCache = async (vin, hostname) => {
     interiorOriginalImage: `http://${hostname}/aos-parser/images/${vin}/interiorOriginalImage.png`,
   };
 
-  console.log(`[${vin}] Изображения автомобиля успешно найдены!`);
+  console.log(`[${vin}] Изображения автомобиля в кэше успешно найдены!`);
   return result;
 };
 

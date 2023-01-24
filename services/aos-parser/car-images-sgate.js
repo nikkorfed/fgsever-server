@@ -5,7 +5,7 @@ const getCarImagesFromCache = require("./car-images-cache");
 
 const headless = process.env.HEADLESS === "true";
 
-let getCarImagesFromAos = async (vin, hostname) => {
+let getCarImagesFromSgate = async (vin, hostname) => {
   if (!(vin.length == 7 || vin.length == 17)) return { error: "wrong-vin" };
 
   // Взятие изображений из кэша, если имеется
@@ -45,43 +45,38 @@ let getCarImagesFromAos = async (vin, hostname) => {
     try {
       loginETKTries++;
 
-      // Авторизация в AOS
+      // Авторизация через S-Gate
 
       if (tryLoginETK && isLoginPage) {
-        console.log(`[${vin}] Оказались на AOS Login. Заново авторизуемся...`);
-        await page.goto("https://aos.bmwgroup.com/group/oss/start");
+        console.log(`[${vin}] Оказались на WEB-EAM Next. Заново авторизуемся...`);
+        await page.goto("https://sgate.bmwgroup.com/ru/");
         await page.waitForNetworkIdle();
-        await page.type("#USER", process.env.AOS_USER);
-        await page.type("#PASSWORD", process.env.AOS_PASSWORD);
-        await page.click("#loginbtn");
+        await page.type("input[autocomplete=username]", process.env.AOS_USER);
+        await page.type("input[autocomplete=current-password]", process.env.AOS_PASSWORD);
+        await page.click(`input[value="Войти в систему"]`);
         await page.waitForNetworkIdle();
         console.log(`[${vin}] Авторизация выполнена`);
       }
 
-      // Переход в ETK
+      // Сохранение/подключение Cookie
 
       if (tryLoginETK) {
-        console.log(`[${vin}] Повторный переход в ETK`);
-        await page.goto("https://onl-osmc-b2i.bmwgroup.com/osmc/b2i/electronicPartsCatalog/start.html?navigation=true&langLong=ru-RU");
-        isLoginPage = await page.$eval("title", (element) => element.textContent == "AOS Login");
-        await page.goto(await page.evaluate('document.getElementById("startlink").getAttribute("href")'));
         let cookies = JSON.stringify(await page.cookies(), null, 2);
         await fs.writeFile(__dirname + "/cookies/etk.cookies", cookies);
-        console.log(`[${vin}] Переход в ETK выполнен`);
+      } else {
+        let cookies = JSON.parse(await fs.readFile(__dirname + "/cookies/etk.cookies"));
+        await page.setCookie(...cookies);
       }
+
+      // Переход в ETK
+
+      await page.goto("https://etk-b2d.bmwgroup.com/etk/");
+      await page.waitForSelector('[perspectivextype="common-startseitePage"]', { timeout: 10000 });
+      await page.click('[perspectivextype="common-startseitePage"]');
+      tryLoginETK = false;
 
       // Переход на страницу автомобиля в ETK
 
-      if (!tryLoginETK) {
-        let cookies = await fs.readFile(__dirname + "/cookies/etk.cookies");
-        cookies = JSON.parse(await cookies);
-        await page.setCookie(...cookies);
-        await page.goto("https://etk-b2i.bmwgroup.com?sessionId=679c48cb722c46138aed7376a48101d3&amp;portal=OSMC&amp;lang=ru_RU");
-      } else tryLoginETK = false;
-      isLoginPage = await page.$eval("title", (title) => title.textContent == "AOS Login");
-      // await page.waitFor(1500);
-      await page.waitForSelector('[perspectivextype="common-startseitePage"]', { timeout: 1500 });
-      await page.click('[perspectivextype="common-startseitePage"]');
       await page.type("#combobox-1016-inputEl", vin);
       await page.click("#searchButton-1017-btnIconEl");
       let showInfoFailed = false;
@@ -111,14 +106,14 @@ let getCarImagesFromAos = async (vin, hostname) => {
           let links = {};
 
           const images = await page.$$(".x-img");
-          links["exteriorImage"] = "https://etk-b2i.bmwgroup.com" + (await images[0].evaluate((image) => image.getAttribute("src")));
-          links["interiorImage"] = "https://etk-b2i.bmwgroup.com" + (await images[1].evaluate((image) => image.getAttribute("src")));
+          links["exteriorImage"] = "https://etk-b2d.bmwgroup.com" + (await images[0].evaluate((image) => image.getAttribute("src")));
+          links["interiorImage"] = "https://etk-b2d.bmwgroup.com" + (await images[1].evaluate((image) => image.getAttribute("src")));
           // await page.waitForFunction((image) => image.getAttribute("src").includes("/etk-rest/"), { polling: "mutation" }, images[0]);
 
           await images[0].click();
           await page.waitForSelector(".x-img.x-window-item", { timeout: 1500 });
           links["exteriorOriginalImage"] =
-            "https://etk-b2i.bmwgroup.com" + (await page.$eval(".x-img.x-window-item", (image) => image.getAttribute("src")));
+            "https://etk-b2d.bmwgroup.com" + (await page.$eval(".x-img.x-window-item", (image) => image.getAttribute("src")));
 
           let element = await page.$$(".x-tool-close");
           await element[1].click();
@@ -126,27 +121,27 @@ let getCarImagesFromAos = async (vin, hostname) => {
           await images[1].click();
           await page.waitForSelector(".x-img.x-window-item", { timeout: 1500 });
           links["interiorOriginalImage"] =
-            "https://etk-b2i.bmwgroup.com" + (await page.$eval(".x-img.x-window-item", (image) => image.getAttribute("src")));
+            "https://etk-b2d.bmwgroup.com" + (await page.$eval(".x-img.x-window-item", (image) => image.getAttribute("src")));
 
           // Сохранение изображений на сервер
 
-          await fs.mkdir(`images/${vin}`, { recursive: true }, (error) => {
+          await fs.mkdir(__dirname + `/images/${vin}`, { recursive: true }, (error) => {
             throw error;
           });
           let exteriorImage = await page.goto(links["exteriorImage"]);
-          await fs.writeFile(`images/${vin}/exteriorImage.png`, await exteriorImage.buffer(), (error) => {
+          await fs.writeFile(__dirname + `/images/${vin}/exteriorImage.png`, await exteriorImage.buffer(), (error) => {
             throw error;
           });
           let interiorImage = await page.goto(links["interiorImage"]);
-          await fs.writeFile(`images/${vin}/interiorImage.png`, await interiorImage.buffer(), (error) => {
+          await fs.writeFile(__dirname + `/images/${vin}/interiorImage.png`, await interiorImage.buffer(), (error) => {
             throw error;
           });
           let exteriorOriginalImage = await page.goto(links["exteriorOriginalImage"]);
-          await fs.writeFile(`images/${vin}/exteriorOriginalImage.png`, await exteriorOriginalImage.buffer(), (error) => {
+          await fs.writeFile(__dirname + `/images/${vin}/exteriorOriginalImage.png`, await exteriorOriginalImage.buffer(), (error) => {
             throw error;
           });
           let interiorOriginalImage = await page.goto(links["interiorOriginalImage"]);
-          await fs.writeFile(`images/${vin}/interiorOriginalImage.png`, await interiorOriginalImage.buffer(), (error) => {
+          await fs.writeFile(__dirname + `/images/${vin}/interiorOriginalImage.png`, await interiorOriginalImage.buffer(), (error) => {
             throw error;
           });
 
@@ -159,7 +154,7 @@ let getCarImagesFromAos = async (vin, hostname) => {
           tryImages = false;
         } catch (error) {
           console.log(`[${vin}] При поиске и сохранении изображений что-то пошло не так :(`);
-          // console.log(error);
+          console.log(error);
           tryImages = true;
         }
 
@@ -167,7 +162,10 @@ let getCarImagesFromAos = async (vin, hostname) => {
       } while (tryImages);
     } catch (error) {
       console.log(`[${vin}] В ETK что-то пошло не так :(`);
-      // console.log(error);
+      console.log(`[${vin}]`, error);
+
+      isLoginPage = await page.$eval("title", (title) => title.textContent == "WEB-EAM Next");
+      authMessage = await page.$eval("#callback_0", (element) => element.textContent).catch(() => null);
       tryLoginETK = true;
     }
 
@@ -186,4 +184,4 @@ let getCarImagesFromAos = async (vin, hostname) => {
   }
 };
 
-module.exports = getCarImagesFromAos;
+module.exports = getCarImagesFromSgate;

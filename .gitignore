@@ -4,4 +4,5 @@ node_modules/
 services/*/cache
 services/*/cookies
 services/*/data
+services/*/images
 services/*/logs
