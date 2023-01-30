@@ -7,6 +7,7 @@ const parts = require("./parts");
 const workPrices = require("./work-prices");
 const survey = require("./survey");
 const api = require("./api");
+const {addRecordForFepair} = require("../controllers/api/recordForFepair")
 
 router.use("/aos-parser", aosParser);
 router.use("/upgrade-calculator", upgradeCalculator);
@@ -14,5 +15,6 @@ router.use("/parts", parts);
 router.use("/work-prices", workPrices);
 router.use("/survey", survey);
 router.use("/api", api);
+router.post("/defectfile", addRecordForFepair);
 
 module.exports = router;
