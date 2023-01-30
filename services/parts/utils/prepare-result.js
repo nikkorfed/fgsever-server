@@ -16,7 +16,7 @@ let prepareResult = (parts, config) => {
 
     let brand = name;
     let type = description?.split(" ")[0].toLowerCase();
-    let key = config.numbersAsKeys ? number : slugify(`${brand} ${type ?? ""}`, { lower: true });
+    let key = config.numbersAsKeys ? number : slugify(`${brand} ${type ?? ""}`, { lower: true, strict: true });
 
     if (number === config.originalNumber) {
       key = "original";
