@@ -82,7 +82,7 @@ let getCarImagesFromAos = async (vin, hostname) => {
       // await page.waitFor(1500);
       await page.waitForSelector('[perspectivextype="common-startseitePage"]', { timeout: 1500 });
       await page.click('[perspectivextype="common-startseitePage"]');
-      await page.type("#combobox-1016-inputEl", vin);
+      await page.type("#unspammableEnterListeningComboBox-1016-inputEl", vin);
       await page.click("#searchButton-1017-btnIconEl");
       let showInfoFailed = false;
       do {

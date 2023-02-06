@@ -77,7 +77,7 @@ let getCarImagesFromSgate = async (vin, hostname) => {
 
       // Переход на страницу автомобиля в ETK
 
-      await page.type("#combobox-1016-inputEl", vin);
+      await page.type("#unspammableEnterListeningComboBox-1016-inputEl", vin);
       await page.click("#searchButton-1017-btnIconEl");
       let showInfoFailed = false;
       do {
