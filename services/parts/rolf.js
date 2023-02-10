@@ -11,8 +11,7 @@ const username = "Дерюгин ПС";
 const password = "3306";
 
 let searchInRolf = catchError(async (numbers, config = {}) => {
-  config.numbersAsKeys ??= true;
-  config.keepNumbers ??= numbers.split(",");
+  config.searchOriginals ??= numbers.split(",");
 
   // Запуск браузера
   const browser = await puppeteer.launch({ headless, defaultViewport: null, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
@@ -48,7 +47,7 @@ let searchInRolf = catchError(async (numbers, config = {}) => {
     const $ = cheerio.load(content);
 
     // Оригинальные запчасти
-    const originalParts = $("#multisearch tr").toArray();
+    const originalParts = $("#multisearch tr.event, #multisearch tr.event1").toArray();
 
     // Подготовка запчастей
     const parts = [...originalParts];

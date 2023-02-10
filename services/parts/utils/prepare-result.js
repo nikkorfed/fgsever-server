@@ -7,7 +7,7 @@ const findSimilarPart = require("./similar-part");
 let prepareResult = (parts, config) => {
   const result = {};
 
-  if (config.keepNumbers) config.keepNumbers.map((number) => (result[number] = { number }));
+  if (config.searchOriginals) config.searchOriginals.map((number) => (result[number] = { number }));
 
   for (let part of parts) {
     let { name, description, number, price, shipping, available, from } = part;
@@ -16,7 +16,7 @@ let prepareResult = (parts, config) => {
 
     let brand = name;
     let type = description?.split(" ")[0].toLowerCase();
-    let key = config.numbersAsKeys ? number : slugify(`${brand} ${type ?? ""}`, { lower: true, strict: true });
+    let key = config.searchOriginals ? number : slugify(`${brand} ${type ?? ""}`, { lower: true, strict: true });
 
     if (number === config.originalNumber) {
       key = "original";
@@ -28,7 +28,7 @@ let prepareResult = (parts, config) => {
     price = price * 1.3;
 
     let [_, similarPart] = findSimilarPart(result, { brand, type, number });
-    if (similarPart) continue;
+    if (!config.searchOriginals && similarPart) continue;
 
     result[key] = { ...result[key], brand, name, description, type, number, price, from };
   }
