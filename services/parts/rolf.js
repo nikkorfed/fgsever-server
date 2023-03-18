@@ -47,7 +47,7 @@ let searchInRolf = catchError(async (numbers, config = {}) => {
     const $ = cheerio.load(content);
 
     // Оригинальные запчасти
-    const originalParts = $("#multisearch tr.event, #multisearch tr.event1").toArray();
+    const originalParts = $("#multisearch tr").toArray();
 
     // Подготовка запчастей
     const parts = [...originalParts];
