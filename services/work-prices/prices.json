@@ -1,6 +1,6 @@
 {
   "1-series": {
-    "motorOil": 800,
+    "motorOil": 1000,
     "oilFilter": 800,
     "sparkPlug": 500,
     "fuelFilter": 1800,
@@ -27,7 +27,7 @@
     "radiatorsWash": 12000
   },
   "2-series": {
-    "motorOil": 800,
+    "motorOil": 1000,
     "oilFilter": 800,
     "sparkPlug": 500,
     "fuelFilter": 1800,
@@ -54,7 +54,7 @@
     "radiatorsWash": 12000
   },
   "3-series": {
-    "motorOil": 800,
+    "motorOil": 1000,
     "oilFilter": 800,
     "sparkPlug": 500,
     "fuelFilter": 1800,
@@ -81,7 +81,7 @@
     "radiatorsWash": 12000
   },
   "4-series": {
-    "motorOil": 800,
+    "motorOil": 1000,
     "oilFilter": 800,
     "sparkPlug": 500,
     "fuelFilter": 1800,
@@ -108,7 +108,7 @@
     "radiatorsWash": 12000
   },
   "5-series": {
-    "motorOil": 900,
+    "motorOil": 1100,
     "oilFilter": 900,
     "sparkPlug": 500,
     "vMotorSparkPlug": 1000,
@@ -136,7 +136,7 @@
     "radiatorsWash": 12000
   },
   "6-series": {
-    "motorOil": 900,
+    "motorOil": 1100,
     "oilFilter": 900,
     "sparkPlug": 500,
     "vMotorSparkPlug": 1000,
@@ -164,7 +164,7 @@
     "radiatorsWash": 12000
   },
   "7-series": {
-    "motorOil": 900,
+    "motorOil": 1100,
     "oilFilter": 900,
     "sparkPlug": 500,
     "vMotorSparkPlug": 1000,
@@ -192,7 +192,7 @@
     "radiatorsWash": 12000
   },
   "8-series": {
-    "motorOil": 900,
+    "motorOil": 1100,
     "oilFilter": 900,
     "sparkPlug": 500,
     "vMotorSparkPlug": 1000,
@@ -220,7 +220,7 @@
     "radiatorsWash": 12000
   },
   "x1": {
-    "motorOil": 1100,
+    "motorOil": 1300,
     "oilFilter": 1100,
     "sparkPlug": 500,
     "fuelFilter": 1800,
@@ -247,7 +247,7 @@
     "radiatorsWash": 22000
   },
   "x2": {
-    "motorOil": 1100,
+    "motorOil": 1300,
     "oilFilter": 1100,
     "sparkPlug": 500,
     "fuelFilter": 1800,
@@ -274,7 +274,7 @@
     "radiatorsWash": 22000
   },
   "x3": {
-    "motorOil": 900,
+    "motorOil": 1100,
     "oilFilter": 900,
     "sparkPlug": 500,
     "fuelFilter": 1800,
@@ -301,7 +301,7 @@
     "radiatorsWash": 12000
   },
   "x4": {
-    "motorOil": 900,
+    "motorOil": 1100,
     "oilFilter": 900,
     "sparkPlug": 500,
     "fuelFilter": 1800,
@@ -328,7 +328,7 @@
     "radiatorsWash": 12000
   },
   "x5": {
-    "motorOil": 900,
+    "motorOil": 1100,
     "oilFilter": 900,
     "sparkPlug": 500,
     "vMotorSparkPlug": 1000,
@@ -356,7 +356,7 @@
     "radiatorsWash": 15000
   },
   "x6": {
-    "motorOil": 900,
+    "motorOil": 1100,
     "oilFilter": 900,
     "sparkPlug": 500,
     "vMotorSparkPlug": 1000,
@@ -384,7 +384,7 @@
     "radiatorsWash": 15000
   },
   "x7": {
-    "motorOil": 900,
+    "motorOil": 1100,
     "oilFilter": 900,
     "sparkPlug": 500,
     "vMotorSparkPlug": 1000,
@@ -412,7 +412,7 @@
     "radiatorsWash": 15000
   },
   "z4": {
-    "motorOil": 900,
+    "motorOil": 1100,
     "oilFilter": 900,
     "sparkPlug": 500,
     "vMotorSparkPlug": 1000,
