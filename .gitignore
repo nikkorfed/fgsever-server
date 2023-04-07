@@ -5,4 +5,5 @@ services/*/cache
 services/*/cookies
 services/*/data
 services/*/images
+services/*/screenshots
 services/*/logs

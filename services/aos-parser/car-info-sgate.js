@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const moment = require("moment");
 const fs = require("fs").promises;
+const path = require("path");
 const telegram = require("~/utils/telegram");
 
 const headless = process.env.HEADLESS === "true";
@@ -58,6 +59,11 @@ let getCarInfoFromSgate = async (vin) => {
         console.log(`[${vin}] Оказались на WEB-EAM Next. Заново авторизуемся...`);
         await page.goto("https://sgate.bmwgroup.com/ru/");
         await page.waitForNetworkIdle();
+
+        const screenshotPath = __dirname + `/screenshots/${Date.now()}.png`;
+        await fs.mkdir(path.dirname(screenshotPath), { recursive: true }).catch(() => null);
+        await page.screenshot({ path: screenshotPath });
+
         await page.type("input[autocomplete=username]", process.env.AOS_USER);
         await page.type("input[autocomplete=current-password]", process.env.AOS_PASSWORD);
         await page.click(`input[value="Войти в систему"]`);
