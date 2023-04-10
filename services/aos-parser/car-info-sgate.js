@@ -60,7 +60,7 @@ let getCarInfoFromSgate = async (vin) => {
         await page.goto("https://sgate.bmwgroup.com/ru/");
         await page.waitForNetworkIdle();
 
-        const screenshotPath = __dirname + `/screenshots/${Date.now()}.png`;
+        const screenshotPath = __dirname + `/screenshots/${Date.now()}-auth.png`;
         await fs.mkdir(path.dirname(screenshotPath), { recursive: true }).catch(() => null);
         await page.screenshot({ path: screenshotPath });
 
@@ -87,6 +87,11 @@ let getCarInfoFromSgate = async (vin) => {
 
       await page.goto("https://myair-b2d.bmwgroup.com/air/faces/xhtml/Start.xhtml?guid=");
       await page.waitForNetworkIdle();
+
+      const screenshotPath = __dirname + `/screenshots/${Date.now()}-air.png`;
+      await fs.mkdir(path.dirname(screenshotPath), { recursive: true }).catch(() => null);
+      await page.screenshot({ path: screenshotPath });
+
       isLoginPage = await page.$eval("title", (title) => title.textContent == "WEB-EAM Next");
 
       // Ввод VIN и переход на страницу автомобиля в AIR
