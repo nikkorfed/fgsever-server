@@ -57,12 +57,6 @@ let getCarInfoFromSgate = async (vin) => {
 
       if (tryLoginAIR && isLoginPage) {
         console.log(`[${vin}] Оказались на WEB-EAM Next. Заново авторизуемся...`);
-        await page.goto("https://sgate.bmwgroup.com/ru/");
-        await page.waitForNetworkIdle();
-
-        const screenshotPath = __dirname + `/screenshots/${Date.now()}-auth.png`;
-        await fs.mkdir(path.dirname(screenshotPath), { recursive: true }).catch(() => null);
-        await page.screenshot({ path: screenshotPath });
 
         await page.type("input[autocomplete=username]", process.env.AOS_USER);
         await page.type("input[autocomplete=current-password]", process.env.AOS_PASSWORD);
@@ -87,10 +81,6 @@ let getCarInfoFromSgate = async (vin) => {
 
       await page.goto("https://myair-b2d.bmwgroup.com/air/faces/xhtml/Start.xhtml?guid=");
       await page.waitForNetworkIdle();
-
-      const screenshotPath = __dirname + `/screenshots/${Date.now()}-air.png`;
-      await fs.mkdir(path.dirname(screenshotPath), { recursive: true }).catch(() => null);
-      await page.screenshot({ path: screenshotPath });
 
       isLoginPage = await page.$eval("title", (title) => title.textContent == "WEB-EAM Next");
 
