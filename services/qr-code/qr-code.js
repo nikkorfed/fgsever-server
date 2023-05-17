@@ -1,6 +1,6 @@
 const fs = require("fs/promises");
 
-const QR_CODE_TIMEOUT = 30 * 1000; // 5 минут
+const QR_CODE_TIMEOUT = 5 * 60 * 1000; // 5 минут
 
 const getCode = async () => {
   const qrCode = JSON.parse(await fs.readFile(__dirname + "/data/qr-code.json").catch(() => null));
