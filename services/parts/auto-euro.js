@@ -13,6 +13,8 @@ const headless = process.env.HEADLESS === "true";
 const username = "riverdale";
 const password = "riverdale";
 
+const browserRef = {};
+
 let searchInAutoEuro = catchError(async (number, config = {}) => {
   config = {
     originalParts: config.originalParts ?? false,
@@ -25,6 +27,7 @@ let searchInAutoEuro = catchError(async (number, config = {}) => {
   // Запуск браузера
   const browser = await puppeteer.launch({ headless, defaultViewport: null, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
   const [page] = await browser.pages();
+  browserRef.instance = browser;
 
   try {
     // Авторизация
@@ -90,16 +93,14 @@ let searchInAutoEuro = catchError(async (number, config = {}) => {
     // Подготовка запчастей
     const parts = [...originalParts, ...internalAnalogs, ...externalAnalogs];
     const parsedParts = parseParts(parts);
-    console.log("AUTOEURO PARSED", parsedParts);
     const result = prepareResult(parsedParts, config);
-    console.log("AUTOEURO RESULT", result);
     return result;
   } catch (error) {
     throw error;
   } finally {
     await browser.close();
   }
-});
+}, browserRef);
 
 let parseParts = (parts) => {
   return parts.map((part) => {

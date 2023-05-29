@@ -15,12 +15,15 @@ const headless = process.env.HEADLESS === "true";
 const login = "bmw2";
 const password = "lenovo";
 
+const browserRef = {};
+
 let searchInAutoVision = catchError(async (number, config = {}) => {
   config = { originalNumber: number, skipNotAvailable: true };
 
   // Запуск браузера
   const browser = await puppeteer.launch({ headless, defaultViewport: null, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
   const [page] = await browser.pages();
+  browserRef.instance = browser;
 
   // Авторизация
   let tryLogin = false,
@@ -83,6 +86,6 @@ let searchInAutoVision = catchError(async (number, config = {}) => {
   // Подготовка запчастей
   const result = prepareResult([part], config);
   return result;
-});
+}, browserRef);
 
 module.exports = searchInAutoVision;

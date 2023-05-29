@@ -10,12 +10,15 @@ const headless = process.env.HEADLESS === "true";
 const username = "Дерюгин ПС";
 const password = "3306";
 
+const browserRef = {};
+
 let searchInRolf = catchError(async (numbers, config = {}) => {
   config.searchOriginals ??= numbers.split(",");
 
   // Запуск браузера
   const browser = await puppeteer.launch({ headless, defaultViewport: null, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
   const [page] = await browser.pages();
+  browserRef.instance = browser;
 
   try {
     // Авторизация
@@ -59,7 +62,7 @@ let searchInRolf = catchError(async (numbers, config = {}) => {
   } finally {
     await browser.close();
   }
-});
+}, browserRef);
 
 let parseParts = (parts) => {
   return parts.map((part) => {

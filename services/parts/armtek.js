@@ -10,6 +10,8 @@ const headless = process.env.HEADLESS === "true";
 const login = "RIVERDALE@inbox.ru";
 const password = "bmwsever72";
 
+const browserRef = {};
+
 let searchInArmtek = catchError(async (number, config = {}) => {
   config = {
     originalParts: config.originalParts ?? false,
@@ -21,6 +23,7 @@ let searchInArmtek = catchError(async (number, config = {}) => {
   // Запуск браузера
   const browser = await puppeteer.launch({ headless, defaultViewport: null, args: ["--no-sandbox", "--disable-setuid-sandbox"] });
   const [page] = await browser.pages();
+  browserRef.instance = browser;
 
   try {
     // Авторизация
@@ -110,7 +113,7 @@ let searchInArmtek = catchError(async (number, config = {}) => {
   } finally {
     await browser.close();
   }
-});
+}, browserRef);
 
 let parseParts = (parts) => {
   return parts.map((part) => {

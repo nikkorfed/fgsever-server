@@ -164,7 +164,7 @@ let getCarImagesFromSgate = async (vin, hostname) => {
       console.log(`[${vin}] В ETK что-то пошло не так :(`);
       console.log(`[${vin}]`, error);
 
-      isLoginPage = await page.$eval("title", (title) => title.textContent == "WEB-EAM Next");
+      isLoginPage = await page.$eval("title", (title) => title.textContent == "WEB-EAM Next").catch(() => false);
       authMessage = await page.$eval("#callback_0", (element) => element.textContent).catch(() => null);
       tryLoginETK = true;
     }
