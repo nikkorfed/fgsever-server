@@ -2,17 +2,23 @@ require("dotenv").config();
 require("module-alias/register");
 
 const express = require("express");
-const morgan = require("morgan");
+const path = require("path");
 const app = express();
 
-const PORT = process.env.PORT || 3000;
-
-const { cors, query } = require("./middleware");
+const { logger, upload, cors, query, error } = require("./middleware");
 const routes = require("./routes");
 
-app.use(morgan("dev"));
+const API_URL = process.env.API_URL || "/";
+const PORT = process.env.PORT || 3000;
+
+app.use(path.normalize(API_URL + "/static"), express.static("./public"));
+
+app.use(logger);
+app.use(upload);
+app.use(express.json());
 app.use(cors);
 app.use(query);
-app.use(routes);
+app.use(API_URL, routes);
+app.use(error);
 
 app.listen(PORT, () => console.log(`Сервер запущен на порту ${PORT}...`));
