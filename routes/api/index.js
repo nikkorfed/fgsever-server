@@ -3,10 +3,12 @@ const router = express.Router();
 
 const users = require("./users");
 const photos = require("./photos");
+const employees = require("./employees");
 const files = require("./files");
 
 router.use("/users", users);
 router.use("/photos", photos);
+router.use("/employees", employees);
 router.use("/files", files);
 
 module.exports = router;
