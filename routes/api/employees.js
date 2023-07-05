@@ -1,12 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
+const { auth } = require("~/middleware");
 const { employees } = require("~/controllers/api");
 
+router.post("/login", employees.login);
 router.post("/", employees.create);
-router.get("/", employees.getAll);
-router.get("/:id", employees.getById);
-router.put("/:id", employees.updateById);
-router.delete("/:id", employees.deleteById);
+router.get("/", auth.employee, employees.getAll);
+router.get("/me", auth.employee, employees.getMe);
+router.get("/:id", auth.employee, employees.getById);
+router.put("/:id", auth.employee, employees.updateById);
+router.delete("/:id", auth.employee, employees.deleteById);
 
 module.exports = router;

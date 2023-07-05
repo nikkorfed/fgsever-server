@@ -1,5 +1,10 @@
 const { employees } = require("~/services/api");
 
+exports.login = async (req, res, next) => {
+  const result = await employees.login(req.body);
+  return res.json(result);
+};
+
 exports.create = async (req, res, next) => {
   const result = await employees.create(req.body);
   return res.json(result);
@@ -10,8 +15,13 @@ exports.getAll = async (req, res, next) => {
   return res.json(result);
 };
 
+exports.getMe = async (req, res, next) => {
+  const result = await employees.getById(req.employee.id);
+  return res.json(result);
+};
+
 exports.getById = async (req, res, next) => {
-  const result = await employees.getById(req.params.id, req.query);
+  const result = await employees.getById(req.params.id);
   return res.json(result);
 };
 
