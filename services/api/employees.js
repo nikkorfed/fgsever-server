@@ -25,7 +25,7 @@ exports.create = async (body) => {
   const employee = await Employee.create(body);
   const token = employee.generateAuthToken();
 
-  return { token, employee: pick(employee, ["id", "guid", "name", "createdAt", "updatedAt"]) };
+  return { token, employee: pick(employee, ["guid", "name", "createdAt", "updatedAt"]) };
 };
 
 exports.getAll = async (query) => {
@@ -34,16 +34,16 @@ exports.getAll = async (query) => {
   return await Employee.findAll(options);
 };
 
-exports.getById = async (id) => {
-  return await Employee.findByPk(id, { attributes: { exclude: ["password"] } });
+exports.getById = async (guid) => {
+  return await Employee.findByPk(guid, { attributes: { exclude: ["password"] } });
 };
 
-exports.updateById = async (id, body) => {
-  const employee = await Employee.findByPk(id, { attributes: { exclude: ["password"] } });
+exports.updateById = async (guid, body) => {
+  const employee = await Employee.findByPk(guid, { attributes: { exclude: ["password"] } });
   return await employee.update(body);
 };
 
-exports.deleteById = async (id) => {
-  const employee = await Employee.findByPk(id, { attributes: { exclude: ["password"] } });
+exports.deleteById = async (guid) => {
+  const employee = await Employee.findByPk(guid, { attributes: { exclude: ["password"] } });
   return await employee.destroy();
 };

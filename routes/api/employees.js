@@ -8,8 +8,8 @@ router.post("/login", employees.login);
 router.post("/", employees.create);
 router.get("/", employees.getAll);
 router.get("/me", auth.employee, employees.getMe);
-router.get("/:id", employees.getById);
-router.put("/:id", auth.employee, employees.updateById);
-router.delete("/:id", auth.employee, employees.deleteById);
+router.get("/:guid", employees.getById);
+router.put("/:guid", auth.employee, employees.updateById);
+router.delete("/:guid", auth.employee, employees.deleteById);
 
 module.exports = router;

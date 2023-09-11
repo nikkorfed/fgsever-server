@@ -1,11 +1,11 @@
 const { Op } = require("sequelize");
 const _ = require("lodash");
 
-exports.parseSorting = ({ sort = "id", order = "desc" }) => {
+exports.parseSorting = ({ sort = "createdAt", order = "desc" }) => {
   const fields = sort.split(",").map((field) => [field, order.toUpperCase()]);
 
-  const sortedById = fields.some(([field]) => field === "id");
-  if (!sortedById) fields.push(["id", order.toUpperCase()]);
+  const sorted = fields.some(([field]) => field === "createdAt");
+  if (!sorted) fields.push(["createdAt", order.toUpperCase()]);
 
   return { order: fields };
 };

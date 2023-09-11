@@ -1,8 +1,8 @@
 exports.up = async (query, Sequelize) => {
   await query.createTable("pushTokens", {
-    id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+    guid: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
     token: { type: Sequelize.STRING, allowNull: false },
-    carGuid: { type: Sequelize.STRING, allowNull: false },
+    carGuid: { type: Sequelize.UUID, allowNull: false },
     createdAt: { type: Sequelize.DATE, allowNull: false },
     updatedAt: { type: Sequelize.DATE, allowNull: false },
   });

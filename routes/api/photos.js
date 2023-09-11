@@ -5,8 +5,8 @@ const { photos } = require("~/controllers/api");
 
 router.post("/", photos.create);
 router.get("/", photos.getAll);
-router.get("/:id", photos.getById);
-router.put("/:id", photos.updateById);
-router.delete("/:id", photos.deleteById);
+router.get("/:guid", photos.getById);
+router.put("/:guid", photos.updateById);
+router.delete("/:guid", photos.deleteById);
 
 module.exports = router;

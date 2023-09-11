@@ -4,7 +4,7 @@ const { withPagination } = require("../utils");
 const db = require("../db");
 
 const User = db.define("user", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  guid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
   name: { type: DataTypes.STRING, allowNull: false },
 });
 

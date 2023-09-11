@@ -3,8 +3,7 @@ const { DataTypes } = require("sequelize");
 const db = require("../db");
 
 const EmployeeRole = db.define("employeeRole", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
-  employeeGuid: { type: DataTypes.STRING, allowNull: false, unique: true },
+  guid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
   role: { type: DataTypes.STRING, allowNull: false },
 });
 

@@ -2,7 +2,7 @@ const _ = require("lodash");
 const { Op, parseCursor, createCursor, normalizeOrder, getPaginationQuery, reverseOrder } = require("./utils");
 
 const withPagination = (Model, options) => {
-  const { methodName = "paginate", primaryKeyField = "id", findAll = Model.findAll, count = Model.count } = options ?? {};
+  const { methodName = "paginate", primaryKeyField = "guid", findAll = Model.findAll, count = Model.count } = options ?? {};
 
   const paginate = async function ({ order: orderOption, where, after, before, limit, include, ...queryArgs } = {}) {
     let order = normalizeOrder(orderOption, primaryKeyField);

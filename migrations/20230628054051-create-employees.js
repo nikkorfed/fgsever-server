@@ -1,13 +1,11 @@
 exports.up = async (query, Sequelize) => {
   await query.createTable("employees", {
-    id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-    guid: { type: Sequelize.STRING, allowNull: false },
+    guid: { type: Sequelize.UUID, defaultValue: Sequelize.UUIDV4, primaryKey: true },
     name: { type: Sequelize.STRING, allowNull: false },
     password: { type: Sequelize.STRING, allowNull: false },
     createdAt: { type: Sequelize.DATE, allowNull: false },
     updatedAt: { type: Sequelize.DATE, allowNull: false },
   });
-  await query.addConstraint("employees", { type: "UNIQUE", fields: ["guid"] });
 };
 
 exports.down = async (query, Sequelize) => {

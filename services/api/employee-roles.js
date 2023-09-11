@@ -11,17 +11,17 @@ exports.getAll = async (query) => {
   return await EmployeeRole.findAll(options);
 };
 
-exports.getById = async (id, query) => {
+exports.getById = async (guid, query) => {
   const options = utils.query.parse(query);
-  return await EmployeeRole.findByPk(id, options);
+  return await EmployeeRole.findByPk(guid, options);
 };
 
-exports.updateById = async (id, body) => {
-  const pushToken = await EmployeeRole.findByPk(id);
+exports.updateById = async (guid, body) => {
+  const pushToken = await EmployeeRole.findByPk(guid);
   return await pushToken.update(body);
 };
 
-exports.deleteById = async (id) => {
-  const pushToken = await EmployeeRole.findByPk(id);
+exports.deleteById = async (guid) => {
+  const pushToken = await EmployeeRole.findByPk(guid);
   return await pushToken.destroy();
 };

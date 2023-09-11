@@ -5,8 +5,8 @@ const { employeeRoles } = require("~/controllers/api");
 
 router.post("/", employeeRoles.create);
 router.get("/", employeeRoles.getAll);
-router.get("/:id", employeeRoles.getById);
-router.put("/:id", employeeRoles.updateById);
-router.delete("/:id", employeeRoles.deleteById);
+router.get("/:guid", employeeRoles.getById);
+router.put("/:guid", employeeRoles.updateById);
+router.delete("/:guid", employeeRoles.deleteById);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 require("dotenv").config();
 require("module-alias/register");
+require("express-async-errors");
 
 const express = require("express");
 const path = require("path");

@@ -11,16 +11,16 @@ exports.getAll = async (req, res, next) => {
 };
 
 exports.getById = async (req, res, next) => {
-  const result = await employeeRoles.getById(req.params.id, req.query);
+  const result = await employeeRoles.getById(req.params.guid, req.query);
   return res.json(result);
 };
 
 exports.updateById = async (req, res, next) => {
-  const result = await employeeRoles.updateById(req.params.id, req.body);
+  const result = await employeeRoles.updateById(req.params.guid, req.body);
   return res.json(result);
 };
 
 exports.deleteById = async (req, res, next) => {
-  const result = await employeeRoles.deleteById(req.params.id);
+  const result = await employeeRoles.deleteById(req.params.guid);
   return res.json(result);
 };

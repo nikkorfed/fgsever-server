@@ -3,9 +3,9 @@ const { DataTypes } = require("sequelize");
 const db = require("../db");
 
 const Photo = db.define("photo", {
-  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  guid: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
   url: { type: DataTypes.STRING, allowNull: false },
-  workGuid: { type: DataTypes.STRING, allowNull: false },
+  workGuid: { type: DataTypes.UUID, allowNull: false },
   description: { type: DataTypes.STRING },
 });
 

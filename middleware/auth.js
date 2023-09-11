@@ -8,7 +8,7 @@ exports.employee = (req, res, next) => {
 
   try {
     const payload = jwt.verify(token, JWT_SECRET);
-    if (payload.role !== "employee") return res.status(403).send({ message: "Доступ запрещён. Недостаточно прав." });
+    if (payload.type !== "employee") return res.status(403).send({ message: "Доступ запрещён. Недостаточно прав." });
 
     req.employee = payload;
     next();

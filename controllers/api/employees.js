@@ -16,21 +16,21 @@ exports.getAll = async (req, res, next) => {
 };
 
 exports.getMe = async (req, res, next) => {
-  const result = await employees.getById(req.employee.id);
+  const result = await employees.getById(req.employee.guid);
   return res.json(result);
 };
 
 exports.getById = async (req, res, next) => {
-  const result = await employees.getById(req.params.id);
+  const result = await employees.getById(req.params.guid);
   return res.json(result);
 };
 
 exports.updateById = async (req, res, next) => {
-  const result = await employees.updateById(req.params.id, req.body);
+  const result = await employees.updateById(req.params.guid, req.body);
   return res.json(result);
 };
 
 exports.deleteById = async (req, res, next) => {
-  const result = await employees.deleteById(req.params.id);
+  const result = await employees.deleteById(req.params.guid);
   return res.json(result);
 };

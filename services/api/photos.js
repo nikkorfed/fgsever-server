@@ -11,17 +11,17 @@ exports.getAll = async (query) => {
   return await Photo.findAll(options);
 };
 
-exports.getById = async (id, query) => {
+exports.getById = async (guid, query) => {
   const options = utils.query.parse(query);
-  return await Photo.findByPk(id, options);
+  return await Photo.findByPk(guid, options);
 };
 
-exports.updateById = async (id, body) => {
-  const user = await Photo.findByPk(id);
+exports.updateById = async (guid, body) => {
+  const user = await Photo.findByPk(guid);
   return await user.update(body);
 };
 
-exports.deleteById = async (id) => {
-  const user = await Photo.findByPk(id);
+exports.deleteById = async (guid) => {
+  const user = await Photo.findByPk(guid);
   return await user.destroy();
 };

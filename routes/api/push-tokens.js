@@ -5,8 +5,8 @@ const { pushTokens } = require("~/controllers/api");
 
 router.post("/", pushTokens.create);
 router.get("/", pushTokens.getAll);
-router.get("/:id", pushTokens.getById);
-router.put("/:id", pushTokens.updateById);
-router.delete("/:id", pushTokens.deleteById);
+router.get("/:guid", pushTokens.getById);
+router.put("/:guid", pushTokens.updateById);
+router.delete("/:guid", pushTokens.deleteById);
 
 module.exports = router;
