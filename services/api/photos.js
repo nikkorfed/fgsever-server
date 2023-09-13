@@ -17,11 +17,11 @@ exports.getById = async (guid, query) => {
 };
 
 exports.updateById = async (guid, body) => {
-  const user = await Photo.findByPk(guid);
-  return await user.update(body);
+  const photo = await Photo.findByPk(guid);
+  return await photo.update(body);
 };
 
 exports.deleteById = async (guid) => {
-  const user = await Photo.findByPk(guid);
-  return await user.destroy();
+  const photo = await Photo.findByPk(guid);
+  return await photo.destroy();
 };

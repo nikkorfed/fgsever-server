@@ -17,11 +17,11 @@ exports.getById = async (guid, query) => {
 };
 
 exports.updateById = async (guid, body) => {
-  const pushToken = await EmployeeRole.findByPk(guid);
-  return await pushToken.update(body);
+  const employeeRole = await EmployeeRole.findByPk(guid);
+  return await employeeRole.update(body);
 };
 
 exports.deleteById = async (guid) => {
-  const pushToken = await EmployeeRole.findByPk(guid);
-  return await pushToken.destroy();
+  const employeeRole = await EmployeeRole.findByPk(guid);
+  return await employeeRole.destroy();
 };

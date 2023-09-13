@@ -5,3 +5,4 @@ exports.employees = require("./employees");
 exports.pushTokens = require("./push-tokens");
 exports.notifications = require("./notifications");
 exports.employeeRoles = require("./employee-roles");
+exports.workApprovals = require("./work-approvals");
