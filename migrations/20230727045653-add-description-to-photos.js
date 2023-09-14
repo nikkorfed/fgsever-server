@@ -1,5 +1,3 @@
-const { DataTypes } = require("sequelize");
-
 exports.up = async (query, Sequelize) => {
   await query.addColumn("photos", "description", { type: Sequelize.STRING });
 };
