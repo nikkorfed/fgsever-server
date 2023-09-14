@@ -1,0 +1,1 @@
+exports.odata = require("./odata");

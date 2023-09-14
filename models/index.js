@@ -2,5 +2,7 @@ exports.User = require("./user");
 exports.Photo = require("./photo");
 exports.Employee = require("./employee");
 exports.PushToken = require("./push-token");
+exports.Notification = require("./notification");
 exports.EmployeeRole = require("./employee-role");
+exports.Work = require("./work");
 exports.WorkApproval = require("./work-approval");
