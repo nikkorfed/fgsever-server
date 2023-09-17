@@ -1,6 +1,8 @@
 const moment = require("moment");
+const { Op } = require("sequelize");
 
-const { Work } = require("~/models");
+const { Work, EmployeeRole, PushToken } = require("../../models");
+const { notifications } = require("../../services/api");
 const { odata } = require("~/api");
 const utils = require("~/utils");
 
@@ -16,6 +18,22 @@ exports.findNewWorks = async () => {
 
     await Work.bulkCreate(sortedNewWorks);
     console.log(`Было найдено ${newWorks.length} новых заказ-нарядов!`);
+
+    const employeeMasters = await EmployeeRole.findAll({ where: { [Op.or]: [{ role: "workshop-foreman" }, { role: "service-advisor" }] } });
+    if (!employeeMasters.length) return;
+
+    const employeeMasterPushTokens = await PushToken.findAll({
+      where: { type: "employee", refGuid: { [Op.or]: employeeMasters.map((employee) => employee.guid) } },
+    });
+    const employeeMasterTokens = employeeMasterPushTokens.map((item) => item.token);
+    if (!employeeMasterTokens.length) return;
+
+    await notifications.send({
+      type: "newWorksAdded",
+      to: employeeMasterTokens,
+      title: "Добавлены заказ-наряды",
+      body: "В приложение были добавлены новые заказ-наряды.",
+    });
   } catch (error) {
     console.log("Поиск новых заказ-нарядов не удался.", error);
   }
