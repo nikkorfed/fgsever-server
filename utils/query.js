@@ -19,7 +19,10 @@ exports.parseFilters = (query, config) => {
     delete query.q;
   }
 
-  for (let field in query) where[field.includes(".") ? `$${field}$` : field] = query[field];
+  for (let field in query) {
+    const values = query[field].includes(",") ? { [Op.or]: query[field].split(",") } : query[field];
+    where[field.includes(".") ? `$${field}$` : field] = values;
+  }
 
   return { where };
 };
