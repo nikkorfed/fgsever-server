@@ -1,9 +1,20 @@
 const utils = require("~/utils");
 
-const { WorkApproval } = require("~/models");
+const { WorkApproval, Work } = require("../../models");
+const { notifications } = require("../../services/api");
+const { odata } = require("../../api");
 
 exports.create = async (body) => {
-  return await WorkApproval.create(body);
+  const workApproval = await WorkApproval.create(body);
+  const work = await odata.getWork(workApproval.guid);
+
+  await notifications.sendToMasters({
+    type: "addWorkApproval",
+    title: "Работы согласованы",
+    body: `По заказ-наряду № ${work.number} заказчиком были согласованы указанные работы.`,
+  });
+
+  return workApproval;
 };
 
 exports.getAll = async (query) => {

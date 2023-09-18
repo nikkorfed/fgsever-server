@@ -20,3 +20,8 @@ exports.works = async () => {
   const response = await oDataApi.get(`/Document_асЗаказНаряд`, { params: { $select: "Ref_Key,Date", $orderby: "Date desc" } });
   return response.data.value.map(prepareWork);
 };
+
+exports.getWork = async (guid) => {
+  const response = await oDataApi.get(`/Document_асЗаказНаряд(guid'${guid}')`);
+  return prepareWork(response.data);
+};
