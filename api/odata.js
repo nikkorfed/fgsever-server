@@ -1,5 +1,6 @@
 const axios = require("axios");
 
+const { prepareCar } = require("../helpers/cars");
 const { prepareWork } = require("../helpers/works");
 
 const odataApiUrl = process.env.ODATA_API_URL;
@@ -17,11 +18,19 @@ const oDataApi = axios.create({
 });
 
 exports.works = async () => {
-  const response = await oDataApi.get(`/Document_асЗаказНаряд`, { params: { $select: "Ref_Key,Date", $orderby: "Date desc" } });
+  const response = await oDataApi.get(`/Document_асЗаказНаряд`, {
+    params: { $select: "Ref_Key,Number,Автомобиль_Key,Date", $orderby: "Date desc" },
+  });
   return response.data.value.map(prepareWork);
 };
 
 exports.getWork = async (guid) => {
   const response = await oDataApi.get(`/Document_асЗаказНаряд(guid'${guid}')`);
   return prepareWork(response.data);
+};
+
+exports.cars = async (guids) => {
+  const filters = guids.map((guid) => `Ref_Key eq guid'${guid}'`).join(" or ");
+  const response = await oDataApi.get("/Catalog_асАвтомобили", { params: { $filter: filters } });
+  return response.data.value.map(prepareCar);
 };

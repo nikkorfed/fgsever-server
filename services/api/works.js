@@ -1,4 +1,5 @@
 const moment = require("moment");
+const { uniq } = require("lodash");
 
 const { Work } = require("../../models");
 const { notifications } = require("../../services/api");
@@ -18,11 +19,20 @@ exports.findNewWorks = async () => {
     await Work.bulkCreate(sortedNewWorks);
     console.log(`Было найдено ${newWorks.length} новых заказ-нарядов!`);
 
-    await notifications.sendToMasters({
-      type: "addNewWorks",
-      title: "Добавлены заказ-наряды",
-      body: "В приложение были добавлены новые заказ-наряды.",
-    });
+    const carGuids = uniq(newWorks.map((item) => item.carGuid));
+    const carsResponse = await odata.cars(carGuids);
+
+    const carsByGuids = {};
+    carsResponse.forEach((item) => (carsByGuids[item.guid] = item));
+    newWorks.forEach((item) => (item.car = carsByGuids[item.carGuid]));
+
+    for (const work of newWorks) {
+      await notifications.sendToMasters({
+        type: "addNewWork",
+        title: "Принят автомобиль",
+        body: `В работу принят автомобиль ${work.car.name} по заказ-наряду № ${work.number}.`,
+      });
+    }
   } catch (error) {
     console.log("Поиск новых заказ-нарядов не удался.", error);
   }
