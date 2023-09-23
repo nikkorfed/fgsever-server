@@ -7,3 +7,4 @@ exports.notifications = require("./notifications");
 exports.employeeRoles = require("./employee-roles");
 exports.works = require("./works");
 exports.workApprovals = require("./work-approvals");
+exports.requests = require("./requests");
