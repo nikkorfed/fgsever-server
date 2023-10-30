@@ -1,16 +1,16 @@
 const utils = require("~/utils");
 
-const { Request } = require("../../models");
+const { Request, Employee } = require("../../models");
 const { notifications } = require("../../services/api");
 const { odata } = require("../../api");
 
 exports.create = async (body) => {
   const request = await Request.create(body);
 
-  const work = await odata.getWork(request.workGuid);
-  const [car] = await odata.cars([work.carGuid]);
-
   if (request.type === "carWash") {
+    const work = await odata.getWork(request.refGuid);
+    const [car] = await odata.cars([work.carGuid]);
+
     await notifications.sendToMasters({
       type: "requestCarWash",
       title: "Нужна мойка",
@@ -34,10 +34,10 @@ exports.getById = async (guid, query) => {
 exports.updateById = async (guid, body) => {
   const request = await Request.findByPk(guid);
 
-  const work = await odata.getWork(request.workGuid);
-  const [car] = await odata.cars([work.carGuid]);
-
   if (request.type === "testDrive" && body.status === "approved") {
+    const work = await odata.getWork(request.refGuid);
+    const [car] = await odata.cars([work.carGuid]);
+
     await notifications.sendToMasters({
       type: "approveTestDrive",
       title: "Тест-драйв разрешен",
@@ -46,11 +46,19 @@ exports.updateById = async (guid, body) => {
   }
 
   if (request.type === "testDrive" && body.status === "rejected") {
+    const work = await odata.getWork(request.refGuid);
+    const [car] = await odata.cars([work.carGuid]);
+
     await notifications.sendToMasters({
       type: "rejectTestDrive",
       title: "Тест-драйв не нужен",
       body: `Заказчик попросил не проводить тестовую поездку на автомобиле ${car.name} по заказ-наряду № ${work.number}.`,
     });
+  }
+
+  if (request.type === "resetPassword" && body.status === "completed") {
+    const employee = await Employee.findByPk(request.refGuid);
+    await employee.destroy();
   }
 
   return await request.update(body);
