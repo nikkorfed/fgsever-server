@@ -18,6 +18,16 @@ exports.create = async (body) => {
     });
   }
 
+  if (request.type === "resetPassword") {
+    const employee = await Employee.findByPk(request.refGuid);
+
+    await notifications.sendToDirectors({
+      type: "requestResetPassword",
+      title: "Запрошен сброс пароля",
+      body: `Сотрудник ${employee.name} запросил сброс пароля для своего аккаунта.`,
+    });
+  }
+
   return request;
 };
 
