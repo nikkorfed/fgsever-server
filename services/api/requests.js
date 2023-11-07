@@ -66,11 +66,6 @@ exports.updateById = async (guid, body) => {
     });
   }
 
-  if (request.type === "resetPassword" && body.status === "completed") {
-    const employee = await Employee.findByPk(request.refGuid);
-    await employee.destroy();
-  }
-
   return await request.update(body);
 };
 
