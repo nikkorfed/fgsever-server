@@ -28,6 +28,7 @@ exports.create = async (body) => {
 };
 
 exports.getAll = async (query) => {
+  query.limit = 1000;
   const options = utils.query.parse(query, { searchField: "guid" });
   return await CarPlate.findAll(options);
 };
