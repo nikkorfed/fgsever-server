@@ -6,3 +6,8 @@ exports.prepareCar = (item) => ({
     .replace(/\s{2,}/, " ")
     .trim(),
 });
+
+exports.prepareCarPlate = (item) => ({
+  guid: item.Автомобиль_Key,
+  value: item.Значение,
+});

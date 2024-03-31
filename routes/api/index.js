@@ -11,6 +11,7 @@ const employeeRoles = require("./employee-roles");
 const works = require("./works");
 const workApprovals = require("./work-approvals");
 const requests = require("./requests");
+const carPlates = require("./car-plates");
 
 router.use("/files", files);
 router.use("/users", users);
@@ -22,5 +23,6 @@ router.use("/employee-roles", employeeRoles);
 router.use("/works", works);
 router.use("/work-approvals", workApprovals);
 router.use("/requests", requests);
+router.use("/car-plates", carPlates);
 
 module.exports = router;

@@ -7,3 +7,4 @@ exports.EmployeeRole = require("./employee-role");
 exports.Work = require("./work");
 exports.WorkApproval = require("./work-approval");
 exports.Request = require("./request");
+exports.CarPlate = require("./car-plate");
