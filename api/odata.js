@@ -1,7 +1,7 @@
 const axios = require("axios");
 const moment = require("moment");
 
-const { prepareCar, prepareCarPlate } = require("../helpers/cars");
+const { prepareCar, prepareCarPlate, prepareCalendarEntry } = require("../helpers/cars");
 const { prepareWork } = require("../helpers/works");
 
 const odataApiUrl = process.env.ODATA_API_URL;
@@ -61,4 +61,14 @@ exports.carPlates = async (carGuids = []) => {
 
   const response = await oDataApi.get("/InformationRegister_асАвтомобили", { params: { $filter: filters, $orderby: "Period desc" } });
   return response.data.value.map(prepareCarPlate);
+};
+
+exports.calendar = async () => {
+  const calendarFilter = "Календарь_Key eq guid'e8ef19f8-1ddf-11e8-8632-2c4d54ee8471'";
+  const weekAgo = moment().utc(true).startOf("day").subtract(1, "week");
+  const dateFilter = `Начало gt datetime'${weekAgo.format().slice(0, -1)}'`;
+  const filters = mergeFilters(calendarFilter, dateFilter);
+
+  const response = await oDataApi.get("/Catalog_ЗаписиКалендаряСотрудника", { params: { $filter: filters, $orderby: "Начало desc" } });
+  return response.data.value.map(prepareCalendarEntry);
 };

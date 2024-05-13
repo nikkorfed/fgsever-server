@@ -1,10 +1,13 @@
 const { uniq, uniqBy } = require("lodash");
+const { UUIDV4 } = require("sequelize");
 
 const { CarPlate } = require("../../models");
-const { odata } = require("~/api");
-const utils = require("~/utils");
+const { odata } = require("../../api");
+const utils = require("../../utils");
 
-exports.syncWith1C = async () => {
+const CAR_PLATE_REGEXP = /[АВЕКМНОРСТУХ]\d{3}[АВЕКМНОРСТУХ]{2}\d{2,3}/iu;
+
+exports.syncWith1cWorks = async () => {
   try {
     const latestWorks = await odata.works(true);
     if (!latestWorks.length) return;
@@ -12,23 +15,53 @@ exports.syncWith1C = async () => {
     const carGuids = uniq(latestWorks.map((work) => work.carGuid));
     const carPlates = uniqBy(await odata.carPlates(carGuids), "guid");
 
-    const deleted = await CarPlate.destroy({ where: { organization: "fgsever", source: "1c" } });
+    const deleted = await CarPlate.destroy({ where: { organization: "fgsever", source: "1cWork" } });
     await CarPlate.bulkCreate(
       carPlates.map((plate) => ({
         ...plate,
         organization: "fgsever",
-        source: "1c",
+        source: "1cWork",
         status: latestWorks.find((work) => work.carGuid === plate.guid).status,
       }))
     );
-    console.log(`Были обновлены госномера (${carPlates.length} добавлено, ${deleted} удалено)!`);
+    console.log(`Обновлены госномера из заказ-нарядов 1С (${carPlates.length} добавлено, ${deleted} удалено)!`);
   } catch (error) {
-    console.log("Поиск госномеров не удался.", error);
+    console.log("Поиск госномеров в заказ-нарядах 1С не удался.", error);
   }
 };
 
-exports.syncWith1C();
-setInterval(exports.syncWith1C, 60 * 60 * 1000);
+exports.syncWith1cCalendar = async () => {
+  try {
+    const latestCalendar = await odata.calendar();
+    if (!latestCalendar.length) return;
+
+    const carPlateMatches = latestCalendar.map((entry) => ({
+      ...entry,
+      value: entry.description.match(CAR_PLATE_REGEXP)?.[0]?.toUpperCase(),
+    }));
+    const carPlates = uniqBy(
+      carPlateMatches.filter((i) => i.value),
+      "value"
+    );
+
+    const deleted = await CarPlate.destroy({ where: { organization: "fgsever", source: "1cCalendar" } });
+    await CarPlate.bulkCreate(
+      carPlates.map((plate) => ({ guid: plate.guid, value: plate.value, organization: "fgsever", source: "1cCalendar" }))
+    );
+
+    console.log(`Обновлены госномера из календаря 1С (${carPlates.length} добавлено, ${deleted} удалено)!`);
+  } catch (error) {
+    console.log("Поиск госномеров в календаре 1С не удался.", error);
+  }
+};
+
+exports.syncWith1c = async () => {
+  await exports.syncWith1cWorks();
+  await exports.syncWith1cCalendar();
+};
+
+exports.syncWith1c();
+setInterval(exports.syncWith1c, 60 * 60 * 1000);
 
 exports.create = async (body) => {
   return await CarPlate.create(body);
