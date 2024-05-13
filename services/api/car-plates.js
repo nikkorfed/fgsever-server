@@ -6,17 +6,24 @@ const utils = require("~/utils");
 
 exports.syncWith1C = async () => {
   try {
-    const newWorks = await odata.works(true);
-    if (!newWorks.length) return;
+    const latestWorks = await odata.works(true);
+    if (!latestWorks.length) return;
 
-    const carGuids = uniq(newWorks.map((work) => work.carGuid));
+    const carGuids = uniq(latestWorks.map((work) => work.carGuid));
     const carPlates = uniqBy(await odata.carPlates(carGuids), "guid");
 
     const deleted = await CarPlate.destroy({ where: { organization: "fgsever", source: "1c" } });
-    await CarPlate.bulkCreate(carPlates.map((plate) => ({ ...plate, organization: "fgsever", source: "1c" })));
-    console.log(`Были обновлены предварительные заказ-наряды (${carPlates.length} добавлено, ${deleted} удалено)!`);
+    await CarPlate.bulkCreate(
+      carPlates.map((plate) => ({
+        ...plate,
+        organization: "fgsever",
+        source: "1c",
+        status: latestWorks.find((work) => work.carGuid === plate.guid).status,
+      }))
+    );
+    console.log(`Были обновлены госномера (${carPlates.length} добавлено, ${deleted} удалено)!`);
   } catch (error) {
-    console.log("Поиск предварительных заказ-нарядов не удался.", error);
+    console.log("Поиск госномеров не удался.", error);
   }
 };
 
