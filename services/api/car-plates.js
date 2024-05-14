@@ -6,6 +6,7 @@ const { odata } = require("../../api");
 const utils = require("../../utils");
 
 const CAR_PLATE_REGEXP = /[АВЕКМНОРСТУХ]\d{3}[АВЕКМНОРСТУХ]{2}\d{2,3}/iu;
+const SYNC_1C_INTERVAL = 1000 * 60 * 2; // 2 минуты
 
 exports.syncWith1cWorks = async () => {
   try {
@@ -61,7 +62,7 @@ exports.syncWith1c = async () => {
 };
 
 exports.syncWith1c();
-setInterval(exports.syncWith1c, 60 * 60 * 1000);
+setInterval(exports.syncWith1c, SYNC_1C_INTERVAL);
 
 exports.create = async (body) => {
   return await CarPlate.create(body);
