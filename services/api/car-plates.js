@@ -37,18 +37,14 @@ exports.syncWith1cCalendar = async () => {
     if (!latestCalendar.length) return;
 
     const carPlateMatches = latestCalendar.map((entry) => ({
-      ...entry,
+      guid: entry.guid,
       value: entry.description.match(CAR_PLATE_REGEXP)?.[0]?.toUpperCase(),
     }));
-    const carPlates = uniqBy(
-      carPlateMatches.filter((i) => i.value),
-      "value"
-    );
+    const filteredCarPLates = carPlateMatches.filter((entry) => entry.value);
+    const carPlates = uniqBy(filteredCarPLates, "value");
 
     const deleted = await CarPlate.destroy({ where: { organization: "fgsever", source: "1cCalendar" } });
-    await CarPlate.bulkCreate(
-      carPlates.map((plate) => ({ guid: plate.guid, value: plate.value, organization: "fgsever", source: "1cCalendar" }))
-    );
+    await CarPlate.bulkCreate(carPlates.map(({ guid, value }) => ({ guid, value, organization: "fgsever", source: "1cCalendar" })));
 
     console.log(`Обновлены госномера из календаря 1С (${carPlates.length} добавлено, ${deleted} удалено)!`);
   } catch (error) {
