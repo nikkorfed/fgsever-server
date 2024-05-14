@@ -1,5 +1,5 @@
 const { uniq, uniqBy } = require("lodash");
-const { UUIDV4 } = require("sequelize");
+const { Sequelize } = require("sequelize");
 
 const { CarPlate } = require("../../models");
 const { odata } = require("../../api");
@@ -67,6 +67,10 @@ exports.create = async (body) => {
 exports.getAll = async (query) => {
   query.limit = 1000;
   const options = utils.query.parse(query, { searchField: "guid" });
+  options.attributes = {
+    include: [[Sequelize.literal(`CASE "source" WHEN 'manual' THEN 1 WHEN '1cCalendar' THEN 2 WHEN '1cWork' THEN 3 END`), "order"]],
+  };
+  options.order = [["order"], ["updatedAt", "DESC"]];
   return await CarPlate.findAll(options);
 };
 
