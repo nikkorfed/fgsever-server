@@ -1,8 +1,9 @@
 const { uniq, uniqBy } = require("lodash");
-const { Sequelize } = require("sequelize");
+const { Sequelize, Op } = require("sequelize");
 
 const { CarPlate } = require("../../models");
 const { odata } = require("../../api");
+const { differenceBy } = require("../../helpers/difference");
 const utils = require("../../utils");
 
 const CAR_PLATE_REGEXP = /[АВЕКМНОРСТУХ]\d{3}[АВЕКМНОРСТУХ]{2}\d{2,3}/iu;
@@ -20,15 +21,21 @@ exports.syncWith1cWorks = async () => {
     const carGuids = uniq(latestWorks.map((work) => work.carGuid));
     const carPlates = uniqBy(await odata.carPlates(carGuids), "guid");
 
-    const deleted = await CarPlate.destroy({ where: { organization, source } });
-    await CarPlate.bulkCreate(
-      carPlates.map((plate) => {
-        const carWork = latestWorks.find((work) => work.carGuid === plate.guid);
-        const comment = `№${carWork.number.trim()}, ${carWork.status}`;
-        return { ...plate, organization, source, comment };
-      })
-    );
-    console.log(`Обновлены госномера из заказ-нарядов 1С (${carPlates.length} добавлено, ${deleted} удалено)!`);
+    const carPlatesToSync = carPlates.map((plate) => {
+      const carWork = latestWorks.find((work) => work.carGuid === plate.guid);
+      const comment = `№${carWork.number.trim()}, ${carWork.status}`;
+      return { ...plate, organization, source, comment };
+    });
+    const existingCarPlates = await CarPlate.findAll({ where: { organization, source } });
+
+    const [carPlatesToUpdate, carPlatesToCreate, carPLatesToDelete] = differenceBy(carPlatesToSync, existingCarPlates, "value");
+
+    const updateOnDuplicate = ["value", "organization", "source", "comment", "createdAt", "updatedAt"];
+    const updated = await CarPlate.bulkCreate(carPlatesToUpdate, { updateOnDuplicate });
+    const created = await CarPlate.bulkCreate(carPlatesToCreate);
+    const deleted = await CarPlate.destroy({ where: { guid: carPLatesToDelete.map((plate) => plate.guid) } });
+
+    console.log(`Обновлены госномера из заказ-нарядов 1С (${updated.length} обновлено, ${created.length} добавлено, ${deleted} удалено)!`);
   } catch (error) {
     console.log("Поиск госномеров в заказ-нарядах 1С не удался.", error);
   }
