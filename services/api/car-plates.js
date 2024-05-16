@@ -24,7 +24,8 @@ exports.syncWith1cWorks = async () => {
     await CarPlate.bulkCreate(
       carPlates.map((plate) => {
         const carWork = latestWorks.find((work) => work.carGuid === plate.guid);
-        return { ...plate, organization, source, comment: `№${carWork.number}, ${carWork.status}` };
+        const comment = `№${carWork.number.trim()}, ${carWork.status}`;
+        return { ...plate, organization, source, comment };
       })
     );
     console.log(`Обновлены госномера из заказ-нарядов 1С (${carPlates.length} добавлено, ${deleted} удалено)!`);
