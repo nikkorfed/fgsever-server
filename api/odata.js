@@ -25,17 +25,17 @@ const mergeFilters = (...items) => {
 };
 
 exports.works = async (latest = false) => {
-  const statusFilter =
-    latest &&
-    [
-      "Состояние eq 'Заявка'",
-      "Состояние eq 'Ожидание'",
-      "Состояние eq 'Выполнен'", // TODO: Возможно, добавить фильтр по дате за последнюю неделю именно к этому статусу
-      "Состояние eq 'Закрыт'", // TODO: Возможно, добавить фильтр по дате за последнюю неделю именно к этому статусу
-    ].join(" or ");
+  // const statusFilter =
+  //   latest &&
+  //   [
+  //     "Состояние eq 'Заявка'",
+  //     "Состояние eq 'Ожидание'",
+  //     "Состояние eq 'Выполнен'", // TODO: Возможно, добавить фильтр по дате за последнюю неделю именно к этому статусу
+  //     "Состояние eq 'Закрыт'", // TODO: Возможно, добавить фильтр по дате за последнюю неделю именно к этому статусу
+  //   ].join(" or ");
   const weekAgo = moment().utc(true).startOf("day").subtract(1, "week");
   const dateFilter = latest && `Date gt datetime'${weekAgo.format().slice(0, -1)}'`;
-  const filters = mergeFilters(statusFilter, dateFilter);
+  const filters = mergeFilters(dateFilter);
 
   const select = "Ref_Key,Number,Состояние,Автомобиль_Key,Date";
 
