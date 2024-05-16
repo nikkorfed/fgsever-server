@@ -7,7 +7,7 @@ const CarPlate = db.define("carPlate", {
   value: { type: DataTypes.STRING, allowNull: false },
   organization: { type: DataTypes.STRING, allowNull: false },
   source: { type: DataTypes.STRING, allowNull: false },
-  status: { type: DataTypes.STRING },
+  comment: { type: DataTypes.STRING },
 });
 
 module.exports = CarPlate;

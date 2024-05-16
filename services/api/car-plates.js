@@ -6,24 +6,26 @@ const { odata } = require("../../api");
 const utils = require("../../utils");
 
 const CAR_PLATE_REGEXP = /[АВЕКМНОРСТУХ]\d{3}[АВЕКМНОРСТУХ]{2}\d{2,3}/iu;
+const WORK_NUMBER_REGEXP = /(?:заявка|заявке|ЗН) (\d+)|(\d+) (?:заявка|заявке|ЗН)/iu;
 const SYNC_1C_INTERVAL = 1000 * 60 * 2; // 2 минуты
 
 exports.syncWith1cWorks = async () => {
   try {
+    const organization = "fgsever";
+    const source = "1cWork";
+
     const latestWorks = await odata.works(true);
     if (!latestWorks.length) return;
 
     const carGuids = uniq(latestWorks.map((work) => work.carGuid));
     const carPlates = uniqBy(await odata.carPlates(carGuids), "guid");
 
-    const deleted = await CarPlate.destroy({ where: { organization: "fgsever", source: "1cWork" } });
+    const deleted = await CarPlate.destroy({ where: { organization, source } });
     await CarPlate.bulkCreate(
-      carPlates.map((plate) => ({
-        ...plate,
-        organization: "fgsever",
-        source: "1cWork",
-        status: latestWorks.find((work) => work.carGuid === plate.guid).status,
-      }))
+      carPlates.map((plate) => {
+        const carWork = latestWorks.find((work) => work.carGuid === plate.guid);
+        return { ...plate, organization, source, comment: `№${carWork.number}, ${carWork.status}` };
+      })
     );
     console.log(`Обновлены госномера из заказ-нарядов 1С (${carPlates.length} добавлено, ${deleted} удалено)!`);
   } catch (error) {
@@ -33,18 +35,27 @@ exports.syncWith1cWorks = async () => {
 
 exports.syncWith1cCalendar = async () => {
   try {
+    const organization = "fgsever";
+    const source = "1cCalendar";
+
     const latestCalendar = await odata.calendar();
     if (!latestCalendar.length) return;
 
-    const carPlateMatches = latestCalendar.map((entry) => ({
-      guid: entry.guid,
-      value: entry.description.match(CAR_PLATE_REGEXP)?.[0]?.toUpperCase(),
-    }));
+    const carPlateMatches = latestCalendar.map((entry) => {
+      const plateMatch = entry.name.match(CAR_PLATE_REGEXP) || entry.description.match(CAR_PLATE_REGEXP);
+      const value = plateMatch?.[0]?.toUpperCase();
+
+      const commentMatch = entry.name.match(WORK_NUMBER_REGEXP) || entry.description.match(WORK_NUMBER_REGEXP);
+      const comment = commentMatch?.[1] || commentMatch?.[2];
+
+      return { guid: entry.guid, value, comment };
+    });
+
     const filteredCarPLates = carPlateMatches.filter((entry) => entry.value);
     const carPlates = uniqBy(filteredCarPLates, "value");
 
-    const deleted = await CarPlate.destroy({ where: { organization: "fgsever", source: "1cCalendar" } });
-    await CarPlate.bulkCreate(carPlates.map(({ guid, value }) => ({ guid, value, organization: "fgsever", source: "1cCalendar" })));
+    const deleted = await CarPlate.destroy({ where: { organization, source } });
+    await CarPlate.bulkCreate(carPlates.map(({ guid, value, comment }) => ({ guid, value, organization, source, comment })));
 
     console.log(`Обновлены госномера из календаря 1С (${carPlates.length} добавлено, ${deleted} удалено)!`);
   } catch (error) {
