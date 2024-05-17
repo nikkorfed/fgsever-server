@@ -62,10 +62,17 @@ exports.syncWith1cCalendar = async () => {
     const filteredCarPLates = carPlateMatches.filter((entry) => entry.value);
     const carPlates = uniqBy(filteredCarPLates, "value");
 
-    const deleted = await CarPlate.destroy({ where: { organization, source } });
-    await CarPlate.bulkCreate(carPlates.map(({ guid, value, comment }) => ({ guid, value, organization, source, comment })));
+    const carPlatesToSync = carPlates.map(({ guid, value, comment }) => ({ guid, value, organization, source, comment }));
+    const existingCarPlates = await CarPlate.findAll({ where: { organization, source } });
 
-    console.log(`Обновлены госномера из календаря 1С (${carPlates.length} добавлено, ${deleted} удалено)!`);
+    const [carPlatesToUpdate, carPlatesToCreate, carPLatesToDelete] = differenceBy(carPlatesToSync, existingCarPlates, "value");
+
+    const updateOnDuplicate = ["value", "organization", "source", "comment", "createdAt", "updatedAt"];
+    const updated = await CarPlate.bulkCreate(carPlatesToUpdate, { updateOnDuplicate });
+    const created = await CarPlate.bulkCreate(carPlatesToCreate);
+    const deleted = await CarPlate.destroy({ where: { guid: carPLatesToDelete.map((plate) => plate.guid) } });
+
+    console.log(`Обновлены госномера из календаря 1С (${updated.length} обновлено, ${created.length} добавлено, ${deleted} удалено)!`);
   } catch (error) {
     console.log("Поиск госномеров в календаре 1С не удался.", error);
   }
