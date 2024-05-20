@@ -28,7 +28,7 @@ exports.syncWith1cWorks = async () => {
     });
     const existingCarPlates = await CarPlate.findAll({ where: { organization, source } });
 
-    const [carPlatesToUpdate, carPlatesToCreate, carPLatesToDelete] = differenceBy(carPlatesToSync, existingCarPlates, "value");
+    const [carPlatesToUpdate, carPlatesToCreate, carPLatesToDelete] = differenceBy(carPlatesToSync, existingCarPlates, "guid");
 
     const updateOnDuplicate = ["value", "organization", "source", "comment", "createdAt", "updatedAt"];
     const updated = await CarPlate.bulkCreate(carPlatesToUpdate, { updateOnDuplicate });
@@ -65,7 +65,7 @@ exports.syncWith1cCalendar = async () => {
     const carPlatesToSync = carPlates.map(({ guid, value, comment }) => ({ guid, value, organization, source, comment }));
     const existingCarPlates = await CarPlate.findAll({ where: { organization, source } });
 
-    const [carPlatesToUpdate, carPlatesToCreate, carPLatesToDelete] = differenceBy(carPlatesToSync, existingCarPlates, "value");
+    const [carPlatesToUpdate, carPlatesToCreate, carPLatesToDelete] = differenceBy(carPlatesToSync, existingCarPlates, "guid");
 
     const updateOnDuplicate = ["value", "organization", "source", "comment", "createdAt", "updatedAt"];
     const updated = await CarPlate.bulkCreate(carPlatesToUpdate, { updateOnDuplicate });
