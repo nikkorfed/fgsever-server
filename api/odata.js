@@ -3,6 +3,7 @@ const moment = require("moment");
 
 const { prepareCar, prepareCarPlate, prepareCalendarEntry } = require("../helpers/cars");
 const { prepareWork } = require("../helpers/works");
+const { chunkRequest } = require("../helpers/requests");
 
 const odataApiUrl = process.env.ODATA_API_URL;
 
@@ -54,14 +55,14 @@ exports.cars = async (guids) => {
   return response.data.value.map(prepareCar);
 };
 
-exports.carPlates = async (carGuids = []) => {
+exports.carPlates = chunkRequest(async (carGuids = []) => {
   const carsFilter = carGuids.map((guid) => `Автомобиль_Key eq guid'${guid}'`).join(" or ");
   const typeFilter = "ВидЗначения eq 'ГосНомер'";
   const filters = mergeFilters(carsFilter, typeFilter);
 
   const response = await oDataApi.get("/InformationRegister_асАвтомобили", { params: { $filter: filters, $orderby: "Period desc" } });
   return response.data.value.map(prepareCarPlate);
-};
+});
 
 exports.calendar = async () => {
   const calendarFilter = "Календарь_Key eq guid'e8ef19f8-1ddf-11e8-8632-2c4d54ee8471'";
