@@ -1,4 +1,4 @@
-const { getCarInfoFromSgate, getCarInfoFromCats, getCarInfoFromAir } = require("~/services/aos-parser");
+const { getCarInfoFromCats, getCarInfoFromAosEpc } = require("~/services/aos-parser");
 const { getCarImagesFromSgate, getCarImagesFromCache } = require("~/services/aos-parser");
 
 const port = +process.env.PORT;
@@ -9,9 +9,9 @@ exports.getCarInfo = async (req, res) => {
 
   if (!vin) return res.send({ error: "no-vin" });
 
-  if (!from || from === "cats") info = await getCarInfoFromSgate(vin); // Временное использвоание во всех случаях AOS
-  // if (!from || from === "cats") info = await getCarInfoFromCats(vin);
-  else if (from === "aos") info = await getCarInfoFromSgate(vin);
+  if (!from) info = await getCarInfoFromAosEpc(vin);
+  else if (from === "cats") info = await getCarInfoFromCats(vin);
+  else if (from === "aos") info = await getCarInfoFromAosEpc(vin);
   else if (from === "air") info = await getCarInfoFromAir(vin);
 
   return res.send(info);

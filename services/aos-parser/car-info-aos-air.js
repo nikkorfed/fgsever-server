@@ -6,7 +6,7 @@ const telegram = require("~/utils/telegram");
 
 const headless = process.env.HEADLESS === "true";
 
-let getCarInfoFromAos = async (vin) => {
+let getCarInfoFromAosAir = async (vin) => {
   if (!(vin.length == 7 || vin.length == 17)) return { error: "wrong-vin" };
 
   let cache = await fs
@@ -82,8 +82,7 @@ let getCarInfoFromAos = async (vin) => {
       // Подключение cookie
 
       if (!tryLoginAIR) {
-        let cookies = await fs.readFile(__dirname + "/cookies/air.cookies");
-        cookies = JSON.parse(await cookies);
+        let cookies = JSON.parse(await fs.readFile(__dirname + "/cookies/air.cookies"));
         await page.setCookie(...cookies);
       } else tryLoginAIR = false;
 
@@ -172,6 +171,7 @@ let getCarInfoFromAos = async (vin) => {
     if (loginAIRTries == 3) {
       if (authMessage) {
         await fs.writeFile(__dirname + "/data/config.json", JSON.stringify({ aosStopped: true }, null, 2));
+        console.log(`Ошибка при входе в AOS:\n\n${authMessage}\n\nПоиск в AOS для робота временно отключен.`);
         await telegram.notify(`*Ошибка при входе в AOS*:\n\n${authMessage}\n\nПоиск в AOS для робота временно отключен.`);
       }
       break;
@@ -191,4 +191,4 @@ let getCarInfoFromAos = async (vin) => {
   }
 };
 
-module.exports = getCarInfoFromAos;
+module.exports = getCarInfoFromAosAir;

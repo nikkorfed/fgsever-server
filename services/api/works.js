@@ -20,7 +20,7 @@ exports.findNewWorks = async () => {
     console.log(`Было найдено ${newWorks.length} новых заказ-нарядов!`);
 
     const carGuids = uniq(newWorks.map((item) => item.carGuid));
-    const carsResponse = await odata.cars(carGuids);
+    const carsResponse = await odata.cars(carGuids); // TODO: Запрашивать машины чанками (для массового нахождения новых заказ-нарядов)
 
     const carsByGuids = {};
     carsResponse.forEach((item) => (carsByGuids[item.guid] = item));
