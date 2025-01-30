@@ -57,11 +57,14 @@ let getCarInfoFromAosEpc = async (vin) => {
         await page.type("input#idToken3", process.env.AOS_PASSWORD);
         await page.click(`input[value="Войти в систему"]`);
         await page.waitForNetworkIdle();
+        console.log(`[${vin}] Авторизация выполнена`);
+      }
 
+      // Сохранение/подключение куки
+
+      if (tryLogin) {
         let cookies = JSON.stringify(await page.cookies(), null, 2);
         await fs.writeFile(__dirname + "/cookies/epc.cookies", cookies);
-
-        console.log(`[${vin}] Авторизация выполнена`);
       } else {
         let cookies = JSON.parse(await fs.readFile(__dirname + "/cookies/epc.cookies").catch(() => null));
         if (cookies) await page.setCookie(...cookies);
@@ -95,7 +98,7 @@ let getCarInfoFromAosEpc = async (vin) => {
     }
   } while (tryLogin);
 
-  // Ввод VIN и переход на страницу автомобиля
+  // Переход на страницу автомобиля
 
   await page.type("#unspammableEnterListeningComboBox-1016-inputEl", vin);
   await page.click("#searchButton-1017-btnIconEl");

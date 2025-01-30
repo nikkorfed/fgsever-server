@@ -1,5 +1,5 @@
 const { getCarInfoFromCats, getCarInfoFromAosEpc } = require("~/services/aos-parser");
-const { getCarImagesFromSgate, getCarImagesFromCache } = require("~/services/aos-parser");
+const { getCarImagesFromAos, getCarImagesFromCache } = require("~/services/aos-parser");
 
 const port = +process.env.PORT;
 
@@ -25,6 +25,6 @@ exports.getCarImages = async (req, res) => {
 
   if (!vin) return res.send({ error: "no-vin" });
 
-  const images = await getCarImagesFromSgate(vin, hostname);
+  const images = await getCarImagesFromAos(vin, hostname);
   return res.send(images);
 };
