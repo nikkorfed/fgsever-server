@@ -103,13 +103,13 @@ let getCarImagesFromAos = async (vin, hostname) => {
       let links = {};
 
       const images = await page.$$(".x-img");
-      links["exteriorImage"] = "https://etk-b2i.bmwgroup.com" + (await images[0].evaluate((image) => image.getAttribute("src")));
-      links["interiorImage"] = "https://etk-b2i.bmwgroup.com" + (await images[1].evaluate((image) => image.getAttribute("src")));
+      links.exteriorImage = "https://etk-b2i.bmwgroup.com" + (await images[0].evaluate((image) => image.getAttribute("src")));
+      links.interiorImage = "https://etk-b2i.bmwgroup.com" + (await images[1].evaluate((image) => image.getAttribute("src")));
       // await page.waitForFunction((image) => image.getAttribute("src").includes("/etk-rest/"), { polling: "mutation" }, images[0]);
 
       await images[0].click();
       await page.waitForSelector(".x-img.x-window-item", { timeout: 1500 });
-      links["exteriorOriginalImage"] =
+      links.exteriorOriginalImage =
         "https://etk-b2i.bmwgroup.com" + (await page.$eval(".x-img.x-window-item", (image) => image.getAttribute("src")));
 
       let element = await page.$$(".x-tool-close");
@@ -117,7 +117,7 @@ let getCarImagesFromAos = async (vin, hostname) => {
 
       await images[1].click();
       await page.waitForSelector(".x-img.x-window-item", { timeout: 1500 });
-      links["interiorOriginalImage"] =
+      links.interiorOriginalImage =
         "https://etk-b2i.bmwgroup.com" + (await page.$eval(".x-img.x-window-item", (image) => image.getAttribute("src")));
 
       // Сохранение изображений на сервер
@@ -142,10 +142,10 @@ let getCarImagesFromAos = async (vin, hostname) => {
 
       // Формирование ссылок на изображения
 
-      result["exteriorImage"] = `http://${hostname}/aos-parser/${exteriorImagePath}`;
-      result["interiorImage"] = `http://${hostname}/aos-parser/${interiorImagePath}`;
-      result["exteriorOriginalImage"] = `http://${hostname}/aos-parser/${exteriorOriginalImagePath}`;
-      result["interiorOriginalImage"] = `http://${hostname}/aos-parser/${interiorOriginalImagePath}`;
+      result.exteriorImage = `http://${hostname}/aos-parser/${exteriorImagePath}`;
+      result.interiorImage = `http://${hostname}/aos-parser/${interiorImagePath}`;
+      result.exteriorOriginalImage = `http://${hostname}/aos-parser/${exteriorOriginalImagePath}`;
+      result.interiorOriginalImage = `http://${hostname}/aos-parser/${interiorOriginalImagePath}`;
 
       tryImages = false;
     } catch (error) {

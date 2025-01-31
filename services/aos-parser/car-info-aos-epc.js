@@ -6,7 +6,7 @@ const telegram = require("~/utils/telegram");
 
 const headless = process.env.HEADLESS === "true";
 
-let getCarInfoFromAosEpc = async (vin) => {
+let getCarInfoFromAosEpc = async (vin, hostname) => {
   if (!(vin.length == 7 || vin.length == 17)) return { error: "wrong-vin" };
 
   let cache = await fs
@@ -119,12 +119,23 @@ let getCarInfoFromAosEpc = async (vin) => {
       "[id*=fahrzeugsuche-foundFahrzeugLabel][id*=innerCt] div:first-child [id*=label]:nth-child(2)",
       (element) => element.textContent.replace(/\s/g, "")
     );
-    let image = await page.$eval(
-      "[id*=fahrzeugsuche-fahrzeugCosyPanel][id*=targetEl] img:first-child",
-      (element) => "https://etk-b2i.bmwgroup.com" + element.getAttribute("src")
-    );
     (result.vin = fullVin), (result.model = model), (result.modelCode = modelCode), (result.description = description);
-    (result.motorCode = motorCode), (result.productionDate = productionDate), (result.image = image);
+    (result.motorCode = motorCode), (result.productionDate = productionDate);
+
+    // Изображение
+
+    let image = await page.$("[id*=fahrzeugsuche-fahrzeugCosyPanel][id*=targetEl] img:first-child");
+    let imageLink = "https://etk-b2i.bmwgroup.com" + (await image.evaluate((image) => image.getAttribute("src")));
+
+    await fs.mkdir(__dirname + `/images/${fullVin}`, { recursive: true });
+
+    let imagePage = await browser.newPage();
+    let imageResponse = await imagePage.goto(imageLink);
+    let imagePath = `images/${fullVin}/image.png`;
+    await fs.writeFile(__dirname + "/" + imagePath, await imageResponse.buffer());
+    await imagePage.close();
+
+    result.image = `http://${hostname}/aos-parser/${imagePath}`;
 
     // Технические детали
 
