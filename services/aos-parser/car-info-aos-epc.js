@@ -104,81 +104,89 @@ let getCarInfoFromAosEpc = async (vin) => {
   await page.click("#searchButton-1017-btnIconEl");
   await page.waitForNetworkIdle();
 
-  // Основная информация
+  const result = {};
 
-  let foundVehicleText = await page.$eval(".etk-found-vehicle-text", (element) => element.textContent);
-  let [match, model, modelCode, description, motorCode, productionDate] = foundVehicleText.match(
-    /(BMW \S+) ([EFG]\d\d) (.+) (\D\d{2,}) (\d\d\.\d\d\.\d\d\d\d)/
-  );
-  let fullVin = await page.$eval(
-    "[id*=fahrzeugsuche-foundFahrzeugLabel][id*=innerCt] div:first-child [id*=label]:nth-child(2)",
-    (element) => element.textContent.replace(/\s/g, "")
-  );
-  let image = await page.$eval(
-    "[id*=fahrzeugsuche-fahrzeugCosyPanel][id*=targetEl] img:first-child",
-    (element) => "https://etk-b2i.bmwgroup.com" + element.getAttribute("src")
-  );
-  const result = { vin: fullVin, model, modelCode, description, motorCode, productionDate, image };
+  try {
+    // Основная информация
 
-  // Технические детали
+    let foundVehicleText = await page.$eval(".etk-found-vehicle-text", (element) => element.textContent);
+    let [match, model, modelCode, description, motorCode, productionDate] = foundVehicleText.match(
+      /(BMW \S+) ([EFG]\d\d) (.+) (\D\d{2,}) (\d\d\.\d\d\.\d\d\d\d)/
+    );
+    let fullVin = await page.$eval(
+      "[id*=fahrzeugsuche-foundFahrzeugLabel][id*=innerCt] div:first-child [id*=label]:nth-child(2)",
+      (element) => element.textContent.replace(/\s/g, "")
+    );
+    let image = await page.$eval(
+      "[id*=fahrzeugsuche-fahrzeugCosyPanel][id*=targetEl] img:first-child",
+      (element) => "https://etk-b2i.bmwgroup.com" + element.getAttribute("src")
+    );
+    (result.vin = fullVin), (result.model = model), (result.modelCode = modelCode), (result.description = description);
+    (result.motorCode = motorCode), (result.productionDate = productionDate), (result.image = image);
 
-  await page.click("[id*=fahrzeugDetails-fahrzeugDetailsWindow][id$=body] a.x-tab:nth-child(1)");
-  result.details = await page.$$eval("[id*=fahrzeugsuche-fahrzeugangabenGrid][id$=body] table tr", (rows) =>
-    rows.reduce((result, row) => {
-      let name = row.querySelector("td:first-child").textContent;
-      let value = row.querySelector("td:nth-child(2)").textContent;
+    // Технические детали
 
-      if (name == "Двери") result.doors = +value;
-      if (name == "Двигатель") result.engine = value;
-      if (name == "Объем двигателя") result.engineDisplacement = +value;
-      if (name == "Мощность (кВт)") result.powerKW = +value;
-      if (name == "Привод") result.drive = value;
-      if (name == "Лаккр") result.color = value;
-      if (name == "Обивка") result.upholstery = value;
-      if (name == "Уровень интеграции (заводской)") result.factoryIntegrationLevel = value;
-      if (name == "Уровень интеграции (текущий)") result.currentIntegrationLevel = value;
-      if (name == "Индивидуальное оснащение") result.individualRetrofitting = value;
+    await page.click("[id*=fahrzeugDetails-fahrzeugDetailsWindow][id$=body] a.x-tab:nth-child(1)");
+    result.details = await page.$$eval("[id*=fahrzeugsuche-fahrzeugangabenGrid][id$=body] table tr", (rows) =>
+      rows.reduce((result, row) => {
+        let name = row.querySelector("td:first-child").textContent;
+        let value = row.querySelector("td:nth-child(2)").textContent;
 
-      return result;
-    }, {})
-  );
+        if (name == "Двери") result.doors = +value;
+        if (name == "Двигатель") result.engine = value;
+        if (name == "Объем двигателя") result.engineDisplacement = +value;
+        if (name == "Мощность (кВт)") result.powerKW = +value;
+        if (name == "Привод") result.drive = value;
+        if (name == "Лаккр") result.color = value;
+        if (name == "Обивка") result.upholstery = value;
+        if (name == "Уровень интеграции (заводской)") result.factoryIntegrationLevel = value;
+        if (name == "Уровень интеграции (текущий)") result.currentIntegrationLevel = value;
+        if (name == "Индивидуальное оснащение") result.individualRetrofitting = value;
 
-  // Количество жидкостей
+        return result;
+      }, {})
+    );
 
-  await page.click("[id*=fahrzeugDetails-fahrzeugDetailsWindow][id$=body] a.x-tab:nth-child(2)");
-  result.quantities = await page.$$eval("[id*=fahrzeugsuche-fuellmengenGrid][id$=body] table tr", (rows) =>
-    rows.reduce((result, row) => {
-      let name = row.querySelector("td:first-child").textContent;
-      let value = row.querySelector("td:nth-child(2)").textContent;
+    // Количество жидкостей
 
-      if (name == "Охлаждение с кондиционированием воздуха") result.antifreezeWithAC = +value;
-      if (name == "Охлаждение без кондиционирования воздуха") result.antifreezeWithoutAC = +value;
-      if (name == "Задняя ось") result.rearAxleFinalDriveOil = +value;
-      if (name.includes("Двигатель")) result.motorOil = +value;
-      if (name.includes("КПП")) result.gearboxOil = +value;
-      if (name.includes("Тормоз")) result.brakeFluid = +value;
+    await page.click("[id*=fahrzeugDetails-fahrzeugDetailsWindow][id$=body] a.x-tab:nth-child(2)");
+    result.quantities = await page.$$eval("[id*=fahrzeugsuche-fuellmengenGrid][id$=body] table tr", (rows) =>
+      rows.reduce((result, row) => {
+        let name = row.querySelector("td:first-child").textContent;
+        let value = row.querySelector("td:nth-child(2)").textContent;
 
-      return result;
-    }, {})
-  );
+        if (name == "Охлаждение с кондиционированием воздуха") result.antifreezeWithAC = +value;
+        if (name == "Охлаждение без кондиционирования воздуха") result.antifreezeWithoutAC = +value;
+        if (name == "Задняя ось") result.rearAxleFinalDriveOil = +value;
+        if (name.includes("Двигатель")) result.motorOil = +value;
+        if (name.includes("КПП")) result.gearboxOil = +value;
+        if (name.includes("Тормоз")) result.brakeFluid = +value;
 
-  // Опции
+        return result;
+      }, {})
+    );
 
-  await page.click("[id*=fahrzeugDetails-fahrzeugDetailsWindow][id$=body] a.x-tab:nth-child(3)");
-  result.options = await page.$$eval("[id*=fahrzeugsuche-ausstattungGrid][id$=body] table tr", (rows) => {
-    const options = { factory: {}, installed: {} };
-    return rows.reduce((result, row) => {
-      let installed = row.classList.contains("etk-nachgeruestet");
-      let code = row.querySelector("td:nth-child(2)")?.textContent;
-      let name = row.querySelector("td:nth-child(3)")?.textContent;
+    // Опции
 
-      if (code && name) result[installed ? "installed" : "factory"][code] = name;
-      return result;
-    }, options);
-  });
+    await page.click("[id*=fahrzeugDetails-fahrzeugDetailsWindow][id$=body] a.x-tab:nth-child(3)");
+    result.options = await page.$$eval("[id*=fahrzeugsuche-ausstattungGrid][id$=body] table tr", (rows) => {
+      const options = { factory: {}, installed: {} };
+      return rows.reduce((result, row) => {
+        let installed = row.classList.contains("etk-nachgeruestet");
+        let code = row.querySelector("td:nth-child(2)")?.textContent;
+        let name = row.querySelector("td:nth-child(3)")?.textContent;
 
-  let closeButton = await page.$('[data-qtip="Close dialog"]');
-  await closeButton.click();
+        if (code && name) result[installed ? "installed" : "factory"][code] = name;
+        return result;
+      }, options);
+    });
+
+    let closeButton = await page.$('[data-qtip="Close dialog"]');
+    await closeButton.click();
+  } catch (error) {
+    console.log(`[${vin}] При сборе информации произошла ошибка :(`);
+    console.log(`[${vin}]`, error);
+  }
 
   // Завершение работы браузера и возврат найденных данных
 
