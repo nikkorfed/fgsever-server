@@ -4,7 +4,7 @@ let getCarImagesFromCache = async (vin, hostname) => {
   if (!(vin.length == 7 || vin.length == 17)) return { error: "wrong-vin" };
 
   let exists = await fs
-    .access(__dirname + `/images/${vin}/`)
+    .access(__dirname + `/images/${vin}/exteriorImage.png`)
     .then((result) => true)
     .catch((error) => false);
 
