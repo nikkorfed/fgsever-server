@@ -104,15 +104,17 @@ let getCarInfoFromAosEpc = async (vin) => {
   await page.click("#searchButton-1017-btnIconEl");
   await page.waitForNetworkIdle();
 
+  // Поиск информации
+
   const result = {};
 
   try {
     // Основная информация
 
     let foundVehicleText = await page.$eval(".etk-found-vehicle-text", (element) => element.textContent);
-    let [match, model, modelCode, description, motorCode, productionDate] = foundVehicleText.match(
-      /(BMW \S+) ([EFG]\d\d) (.+) (\D\d{2,}) (\d\d\.\d\d\.\d\d\d\d)/
-    );
+    let foundVehicleMatch = foundVehicleText.match(/(BMW \S+) ([EFG]\d\d) (.+) (\D\S{2,}) (\d\d\.\d\d\.\d\d\d\d)/);
+    let [match, model, modelCode, description, motorCode, productionDate] = foundVehicleMatch;
+
     let fullVin = await page.$eval(
       "[id*=fahrzeugsuche-foundFahrzeugLabel][id*=innerCt] div:first-child [id*=label]:nth-child(2)",
       (element) => element.textContent.replace(/\s/g, "")
@@ -184,7 +186,7 @@ let getCarInfoFromAosEpc = async (vin) => {
     let closeButton = await page.$('[data-qtip="Close dialog"]');
     await closeButton.click();
   } catch (error) {
-    console.log(`[${vin}] При сборе информации произошла ошибка :(`);
+    console.log(`[${vin}] При поиске информации произошла ошибка :(`);
     console.log(`[${vin}]`, error);
   }
 
