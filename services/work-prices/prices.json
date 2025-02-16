@@ -1,6 +1,7 @@
 {
   "normHour": 4600,
   "wheel-alignment": {
+    "check": 1500,
     "f-series": 6500,
     "g-series-sedans": 7000,
     "g-series-x": 7500
