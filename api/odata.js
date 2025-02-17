@@ -65,7 +65,8 @@ exports.carPlates = chunkRequest(async (carGuids = []) => {
 });
 
 exports.calendar = async () => {
-  const calendarFilter = "Календарь_Key eq guid'e8ef19f8-1ddf-11e8-8632-2c4d54ee8471'";
+  const calendarGuids = ["111edca7-2665-11e6-848a-002354bb1d74", "e8ef19f8-1ddf-11e8-8632-2c4d54ee8471"];
+  const calendarFilter = calendarGuids.map((guid) => `Календарь_Key eq guid'${guid}'`).join(" or ");
   const weekAgo = moment().utc(true).startOf("day").subtract(1, "week");
   const dateFilter = `Начало gt datetime'${weekAgo.format().slice(0, -1)}'`;
   const filters = mergeFilters(calendarFilter, dateFilter);
