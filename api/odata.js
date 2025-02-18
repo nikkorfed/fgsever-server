@@ -2,6 +2,7 @@ const axios = require("axios");
 const moment = require("moment");
 
 const { prepareCar, prepareCarPlate, prepareCalendarEntry } = require("../helpers/cars");
+const { prepareWorkStatus } = require("../helpers/workStatuses");
 const { prepareWork } = require("../helpers/works");
 const { chunkRequest } = require("../helpers/requests");
 
@@ -25,7 +26,14 @@ const mergeFilters = (...items) => {
   return filters.join(" and ");
 };
 
+exports.workStatuses = async () => {
+  const select = "Ref_Key,Description";
+  const response = await oDataApi.get(`/Catalog_асСостоянияЗаказНарядов`, { params: { $select: select } });
+  return response.data.value.map(prepareWorkStatus);
+};
+
 exports.works = async (latest = false) => {
+  const workStatuses = await exports.workStatuses();
   // const statusFilter =
   //   latest &&
   //   [
@@ -41,7 +49,7 @@ exports.works = async (latest = false) => {
   const select = "Ref_Key,Number,Состояние,Автомобиль_Key,Date";
 
   const response = await oDataApi.get(`/Document_асЗаказНаряд`, { params: { $filter: filters, $select: select, $orderby: "Date desc" } });
-  return response.data.value.map(prepareWork);
+  return response.data.value.map(prepareWork(workStatuses));
 };
 
 exports.getWork = async (guid) => {
