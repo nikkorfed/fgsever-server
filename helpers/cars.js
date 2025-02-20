@@ -14,6 +14,6 @@ exports.prepareCarPlate = (item) => ({
 
 exports.prepareCalendarEntry = (item) => ({
   guid: item.Ref_Key,
-  name: item.Description,
+  name: item.Наименование,
   description: item.Описание,
 });
