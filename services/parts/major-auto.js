@@ -69,7 +69,7 @@ let parseParts = (parts) => {
 
     let name = $("td:nth-child(2) .group-name").text();
     let description = $("td:nth-child(3)").text().replaceAll("/n", "").trim();
-    let number = $("td:nth-child(2) .part-main").text().trim();
+    let number = $("td:nth-child(2) .search-part, td:nth-child(2) .part-main").first().text().trim();
 
     let price = +$("td:nth-child(5) [id*=priceItemLbl]").text().replace(/\s/g, "").replace(",", ".");
     let available = $("td:nth-child(8)").text().trim() === "доступно";
