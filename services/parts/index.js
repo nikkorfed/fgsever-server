@@ -1,6 +1,7 @@
 exports.searchOriginals = require("./search-originals");
 exports.searchAlternatives = require("./search-alternatives");
 exports.searchInRolf = require("./rolf");
+exports.searchInMajorAuto = require("./major-auto");
 exports.searchInShateM = require("./shate-m");
 exports.searchInAutoEuro = require("./auto-euro");
 exports.searchInArmtek = require("./armtek");

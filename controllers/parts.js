@@ -2,6 +2,7 @@ const {
   searchOriginals,
   searchAlternatives,
   searchInRolf,
+  searchInMajorAuto,
   searchInShateM,
   searchInAutoEuro,
   searchInArmtek,
@@ -16,7 +17,8 @@ exports.searchOriginals = async (req, res) => {
 
   let parts;
   if (!from) parts = await searchOriginals(numbers, config);
-  else if (from === "rolf") parts = await searchInRolf(number, config);
+  else if (from === "rolf") parts = await searchInRolf(numbers, config);
+  else if (from === "majorauto") parts = await searchInMajorAuto(numbers, config);
 
   if (!parts || !Object.keys(parts).length) return res.send({ error: "no-parts" });
   return res.send(parts);
