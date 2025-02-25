@@ -5,9 +5,10 @@ const {
   searchInMajorAuto,
   searchInShateM,
   searchInAutoEuro,
+  searchInAutoEuroAPI,
   searchInArmtek,
   searchInAutoVision,
-} = require("~/services/parts");
+} = require("../services/parts");
 
 exports.searchOriginals = async (req, res) => {
   const { from, ...config } = req.query;
@@ -34,6 +35,7 @@ exports.searchAlternatives = async (req, res) => {
   if (!from) parts = await searchAlternatives(number, config);
   else if (from === "shatem") parts = await searchInShateM(number, config);
   else if (from === "autoeuro") parts = await searchInAutoEuro(number, config);
+  else if (from === "autoeuroapi") parts = await searchInAutoEuroAPI(number, config);
   else if (from === "armtek") parts = await searchInArmtek(number, config);
   // else if (from === "autovision") parts = await searchInAutoVision(number, config);
 

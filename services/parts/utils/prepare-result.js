@@ -27,10 +27,10 @@ let prepareResult = (parts, config) => {
     name = shipping ? `${name} (Доставка ${from === "auto-vision" ? "из Германии " : ""}${shipping})` : name;
     price = price * 1.3;
 
-    let [_, similarPart] = findSimilarPart(result, { brand, type, number });
-    if (!config.searchOriginals && similarPart) continue;
+    let [similarKey, similarPart] = findSimilarPart(result, { brand, type, number });
+    if (!config.searchOriginals && similarPart && similarPart.price < price) continue;
 
-    result[key] = { ...result[key], brand, name, description, type, number, price, from };
+    result[similarKey ?? key] = { ...result[similarKey ?? key], brand, name, description, type, number, price, from };
   }
 
   return sortParts(filterParts(result, config));

@@ -4,5 +4,6 @@ exports.searchInRolf = require("./rolf");
 exports.searchInMajorAuto = require("./major-auto");
 exports.searchInShateM = require("./shate-m");
 exports.searchInAutoEuro = require("./auto-euro");
+exports.searchInAutoEuroAPI = require("./auto-euro-api");
 exports.searchInArmtek = require("./armtek");
 exports.searchInAutoVision = require("./auto-vision");
