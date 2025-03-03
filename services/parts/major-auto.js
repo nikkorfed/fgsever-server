@@ -39,6 +39,8 @@ let searchInMajorAuto = catchError(async (numbers, config = {}) => {
       if (loginTries == 3) break;
     } while (tryLogin);
 
+    await page.screenshot({ path: `screenshots/${Date.now()}.png` });
+
     // Запрос запчастей
     await page.click('a[data-searchtype="ByList"]');
     await page.type("textarea#searchElements", numbers.replace(/\,/g, "\n"));
