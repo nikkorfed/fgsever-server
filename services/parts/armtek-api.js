@@ -48,8 +48,6 @@ let searchInArmtekAPI = catchError(async (number, config = {}) => {
   const parts = [...originalParts, ...internalAnalogs, ...externalAnalogs];
   const result = prepareResult(parseParts(parts), config);
 
-  debugger;
-
   return result;
 });
 

@@ -1,6 +1,6 @@
 const searchInShateM = require("./shate-m");
-const searchInAutoEuro = require("./auto-euro");
-const searchInArmtek = require("./armtek");
+const searchInAutoEuroAPI = require("./auto-euro-api");
+const searchInArmtekAPI = require("./armtek-api");
 const searchInAutoVision = require("./auto-vision");
 
 const { mergeParts } = require("./utils");
@@ -9,8 +9,8 @@ let searchAlternatives = async (number, config) => {
   // Запчасти из различных источников
   const [shateMParts, autoEuroParts, armtekParts] = await Promise.all([
     // searchInShateM(number, config),
-    searchInAutoEuro(number, config),
-    searchInArmtek(number, config),
+    searchInAutoEuroAPI(number, config),
+    searchInArmtekAPI(number, config),
     // searchInAutoVision(number, config),
   ]);
 
