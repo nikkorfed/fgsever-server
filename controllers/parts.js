@@ -7,6 +7,7 @@ const {
   searchInAutoEuro,
   searchInAutoEuroAPI,
   searchInArmtek,
+  searchInArmtekAPI,
   searchInAutoVision,
 } = require("../services/parts");
 
@@ -37,6 +38,7 @@ exports.searchAlternatives = async (req, res) => {
   else if (from === "autoeuro") parts = await searchInAutoEuro(number, config);
   else if (from === "autoeuroapi") parts = await searchInAutoEuroAPI(number, config);
   else if (from === "armtek") parts = await searchInArmtek(number, config);
+  else if (from === "armtekapi") parts = await searchInArmtekAPI(number, config);
   // else if (from === "autovision") parts = await searchInAutoVision(number, config);
 
   if (!parts || !Object.keys(parts).length) return res.send({ error: "no-parts" });

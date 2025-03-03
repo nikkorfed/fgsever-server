@@ -18,7 +18,7 @@ let prepareResult = (parts, config) => {
     let type = description?.split(" ")[0].toLowerCase();
     let key = config.searchOriginals ? number : slugify(`${brand} ${type ?? ""}`, { lower: true, strict: true });
 
-    if (number === config.originalNumber) {
+    if (number === config.originalNumber && brand === "BMW") {
       key = "original";
       name = "Оригинал";
     }

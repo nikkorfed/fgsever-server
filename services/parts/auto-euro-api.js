@@ -11,7 +11,7 @@ const deliveryKey = "hMRG1NqRbDmVvfGrHAUlgA0vlUZgRhN04SG01sixtCpoTjC99FJ165xxzGt
 
 let searchInAutoEuroAPI = catchError(async (number, config = {}) => {
   config = {
-    originalParts: config.originalParts ?? true, // TODO: Вернуть false
+    originalParts: config.originalParts ?? false,
     externalAnalogs: config.externalAnalogs ?? true,
     onlyFavorites: config.onlyFavorites ?? false,
     originalNumber: number,

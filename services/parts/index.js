@@ -6,4 +6,5 @@ exports.searchInShateM = require("./shate-m");
 exports.searchInAutoEuro = require("./auto-euro");
 exports.searchInAutoEuroAPI = require("./auto-euro-api");
 exports.searchInArmtek = require("./armtek");
+exports.searchInArmtekAPI = require("./armtek-api");
 exports.searchInAutoVision = require("./auto-vision");
