@@ -31,6 +31,7 @@ let searchInMajorAuto = catchError(async (numbers, config = {}) => {
         await page.type("input#UserName", username);
         await page.type("input#Password", password);
         await page.click("input#btnLogOn");
+        await page.waitForNetworkIdle();
         const cookies = await page.cookies();
         await fs.writeFile(__dirname + "/cookies/major-auto.json", JSON.stringify(cookies, null, 2));
       } else await page.setCookie(...cookies);
