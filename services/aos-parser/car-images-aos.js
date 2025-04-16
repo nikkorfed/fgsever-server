@@ -38,7 +38,7 @@ let getCarImagesFromAos = async (vin, hostname) => {
   await page.setExtraHTTPHeaders({ "Accept-Language": "ru-RU" });
   page.on("dialog", async (dialog) => await dialog.dismiss());
 
-  // Поиск данных в EPC
+  // Авторизация и переход в EPC
 
   do {
     try {
@@ -66,7 +66,7 @@ let getCarImagesFromAos = async (vin, hostname) => {
       // Переход в EPC
 
       console.log(`[${vin}] Переход в EPC...`);
-      await page.goto("https://onl-osmc-b2i.bmwgroup.com/osmc/b2i/electronicPartsCatalog/start.html", { timeout: 10000 });
+      await page.goto("https://aos.bmwgroup.com/osmc/b2i/electronicPartsCatalog/start.html", { timeout: 10000 });
       await page.waitForNetworkIdle();
       await page.goto(await page.evaluate('document.getElementById("startlink").getAttribute("href")'), { timeout: 10000 });
       await page.waitForSelector('[perspectivextype="common-startseitePage"]', { timeout: 10000 });
