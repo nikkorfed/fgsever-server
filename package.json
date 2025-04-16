@@ -32,7 +32,7 @@
     "morgan": "^1.10.0",
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
-    "puppeteer": "^10.4.0",
+    "puppeteer": "^24.6.1",
     "sequelize": "^6.25.5",
     "slugify": "^1.6.5",
     "string-similarity": "^4.0.4",
