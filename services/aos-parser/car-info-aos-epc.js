@@ -49,6 +49,17 @@ let getCarInfoFromAosEpc = async (vin, hostname) => {
 
   do {
     try {
+      // Вход в AOS
+
+      if (tryLogin && !isLoginPage) {
+        console.log(`[${vin}, запчасти] Оказались на неизвестной странице. Заново входим в AOS...`);
+        await page.goto("https://aos.bmwgroup.com/", { timeout: 10000 });
+        await page.waitForNetworkIdle();
+        await page.click('button[data-qa="header-login-button"]');
+        await page.waitForNetworkIdle();
+        isLoginPage = true;
+      }
+
       // Авторизация в AOS
 
       if (tryLogin && isLoginPage) {
