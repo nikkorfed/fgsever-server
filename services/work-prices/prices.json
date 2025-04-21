@@ -2,9 +2,9 @@
   "normHour": 4600,
   "wheel-alignment": {
     "check": 0.375,
-    "f-series": 6500,
-    "g-series-sedans": 7000,
-    "g-series-x": 7500
+    "f-series": 5500,
+    "g-series-sedans": 6000,
+    "g-series-x": 6500
   },
   "1-series": {
     "motorOil": 0.375,
