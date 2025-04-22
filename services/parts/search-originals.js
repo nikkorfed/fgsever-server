@@ -1,5 +1,6 @@
 const searchInRolf = require("./rolf");
 const searchInMajorAuto = require("./major-auto");
+const searchInMajorAutoAPI = require("./major-auto-api");
 
 const { mergeParts } = require("./utils");
 

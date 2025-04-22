@@ -2,6 +2,7 @@ exports.searchOriginals = require("./search-originals");
 exports.searchAlternatives = require("./search-alternatives");
 exports.searchInRolf = require("./rolf");
 exports.searchInMajorAuto = require("./major-auto");
+exports.searchInMajorAutoAPI = require("./major-auto-api");
 exports.searchInShateM = require("./shate-m");
 exports.searchInAutoEuro = require("./auto-euro");
 exports.searchInAutoEuroAPI = require("./auto-euro-api");
