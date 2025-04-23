@@ -3,7 +3,7 @@ const soap = require("soap");
 const { prepareResult, catchError } = require("./utils");
 
 const url = "https://parts.major-auto.ru:8066/PartsProcessing.asmx?WSDL";
-const identificator = "88CBC883-8F8D-4E9E-84F0-D725732EE4DA";
+const identificator = "{88CBC883-8F8D-4E9E-84F0-D725732EE4DA}";
 
 let searchInMajorAutoAPI = catchError(async (numbers, config = {}) => {
   config.searchOriginals ??= numbers.split(",");
@@ -22,7 +22,7 @@ let searchInMajorAutoAPI = catchError(async (numbers, config = {}) => {
   debugger;
 
   // Оригинальные запчасти
-  const originalParts = $("#resultContainerByList > table > tbody > tr").toArray();
+  const originalParts = [];
 
   // Подготовка запчастей
   const parts = [...originalParts];
