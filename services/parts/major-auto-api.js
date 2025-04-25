@@ -18,7 +18,6 @@ let searchInMajorAutoAPI = catchError(async (numbers, config = {}) => {
     },
   });
   const [partsData] = partsResponse;
-  console.log(JSON.stringify(partsData, null, 2));
 
   // Оригинальные запчасти
   const originalParts = partsData.GetAvailabilityResult.Rows?.Row ?? [];
