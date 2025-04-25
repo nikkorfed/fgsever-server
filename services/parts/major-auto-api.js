@@ -37,7 +37,7 @@ let parseParts = (parts) => {
     let number = part.PartNo;
 
     let price = part.Part[0].Price.PricePurchase;
-    let available = true;
+    let available = part.Part[0].Availabilities.Availability.some((item) => item.QTY !== 0);
 
     return {
       name,
