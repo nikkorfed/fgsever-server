@@ -10,14 +10,15 @@ let searchInMajorAutoAPI = catchError(async (numbers, config = {}) => {
 
   // Запрос запчастей
   const client = await soap.createClientAsync(url);
-  const stocksResponse = await client.GetStocksAsync({ request: { Authority: { ConsumerID: identificator } } });
-  console.log(stocksResponse[0].GetStocksResult);
   const partsResponse = await client.GetAvailabilityAsync({
-    request: { Authority: { ConsumerID: identificator }, Options: {}, Rows: [{ Row: { PartNo: "11428575211" } }] },
+    request: {
+      Authority: { ConsumerID: identificator },
+      Options: {},
+      Rows: { Row: config.searchOriginals.map((number) => ({ PartNo: number })) },
+    },
   });
   const [partsResult] = partsResponse;
-  console.log(partsResult.GetAvailabilityResult);
-  console.log(partsResult.GetAvailabilityResult.Rows);
+  console.log(JSON.stringify(partsResult, null, 2));
 
   // Оригинальные запчасти
   const originalParts = [];
