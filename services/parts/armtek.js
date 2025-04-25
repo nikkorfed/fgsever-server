@@ -8,7 +8,7 @@ const { prepareResult, catchError } = require("./utils");
 
 const headless = process.env.HEADLESS === "true";
 const login = "RIVERDALE@inbox.ru";
-const password = "bmwsever72";
+const password = "comandG05";
 
 const browserRef = {};
 

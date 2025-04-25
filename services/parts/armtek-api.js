@@ -5,7 +5,7 @@ const querystring = require("querystring");
 const { prepareResult, catchError } = require("./utils");
 
 const username = "RIVERDALE@inbox.ru";
-const password = "bmwsever72";
+const password = "comandG05";
 
 const shippingOrganization = "4000";
 const client = "43252691";
