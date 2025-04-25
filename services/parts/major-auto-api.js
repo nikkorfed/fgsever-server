@@ -11,7 +11,7 @@ let searchInMajorAutoAPI = catchError(async (numbers, config = {}) => {
   // Запрос запчастей
   const client = await soap.createClientAsync(url);
   const partsResponse = await client.GetAvailabilityAsync({
-    request: { Authority: { ConsumerID: identificator }, Rows: [{ PartNo: "11428575211" }] },
+    request: { Authority: { ConsumerID: identificator }, Rows: [{ Row: { PartNo: "11428575211" } }] },
   });
   const [partsResult] = partsResponse;
   console.log("RESULT:", partsResult);
