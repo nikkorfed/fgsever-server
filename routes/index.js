@@ -1,4 +1,5 @@
 const express = require("express");
+const proxy = require("express-http-proxy");
 const router = express.Router();
 
 const aosParser = require("./aos-parser");
@@ -16,5 +17,6 @@ router.use("/work-prices", workPrices);
 router.use("/qr-code", qrCode);
 router.use("/survey", survey);
 router.use("/api", api);
+router.use("/proxy", proxy("https://parts.major-auto.ru:8066"));
 
 module.exports = router;
