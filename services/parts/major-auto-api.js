@@ -3,7 +3,7 @@ const soap = require("soap");
 const { prepareResult, catchError } = require("./utils");
 
 const url = "https://parts.major-auto.ru:8066/PartsProcessing.asmx?WSDL";
-const identificator = "{740B6A56-A0BB-414B-8FCC-7EAAFB439681}";
+const identificator = "740B6A56-A0BB-414B-8FCC-7EAAFB439681";
 
 let searchInMajorAutoAPI = catchError(async (numbers, config = {}) => {
   config.searchOriginals ??= numbers.split(",");
