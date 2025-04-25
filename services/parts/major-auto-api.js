@@ -3,23 +3,18 @@ const soap = require("soap");
 const { prepareResult, catchError } = require("./utils");
 
 const url = "https://parts.major-auto.ru:8066/PartsProcessing.asmx?WSDL";
-const identificator = "{88CBC883-8F8D-4E9E-84F0-D725732EE4DA}";
+const identificator = "{740B6A56-A0BB-414B-8FCC-7EAAFB439681}";
 
 let searchInMajorAutoAPI = catchError(async (numbers, config = {}) => {
   config.searchOriginals ??= numbers.split(",");
 
   // Запрос запчастей
   const client = await soap.createClientAsync(url);
-  const description = client.describe();
   const partsResponse = await client.GetAvailabilityAsync({
-    request: {
-      Authority: { ConsumerID: identificator },
-      Rows: [{ PartNo: "11428575211" }],
-    },
+    request: { Authority: { ConsumerID: identificator }, Rows: [{ PartNo: "11428575211" }] },
   });
   const [partsResult] = partsResponse;
   console.log("RESULT:", partsResult);
-  debugger;
 
   // Оригинальные запчасти
   const originalParts = [];
