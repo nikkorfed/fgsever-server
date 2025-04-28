@@ -34,6 +34,8 @@ let getOptions = async ({ modelCode, productionDate, currentOptions = [] }) => {
         } else specialPricesSheet = currentSheet;
       }
 
+  if (!optionsSheet) return { error: "no-upgrade-options" };
+
   // Формирование списка опций
   for (let row of await optionsSheet.getRows()) {
     let option = {
